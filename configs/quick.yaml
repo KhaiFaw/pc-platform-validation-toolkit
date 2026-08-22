@@ -1,0 +1,101 @@
+schema_version: 1
+name: quick-validation
+description: Short functional validation with conservative resource limits.
+sampling_interval_seconds: 0.25
+tests:
+  - id: INV-001
+    name: Platform inventory consistency
+    category: inventory
+    timeout_seconds: 5
+    severity: critical
+    requirements:
+      - metric: logical_cpu_count
+        operator: greater_than
+        expected: 0
+      - metric: total_memory_bytes
+        operator: greater_than
+        expected: 0
+
+  - id: CPU-001
+    name: Single-worker integer correctness
+    category: cpu
+    timeout_seconds: 10
+    parameters:
+      workers: 1
+      workload_size: 64
+      block_size_bytes: 16384
+    requirements:
+      - metric: checksum_valid
+        operator: equals
+        expected: true
+
+  - id: CPU-002
+    name: Floating-point correctness
+    category: cpu
+    timeout_seconds: 10
+    parameters:
+      iterations: 100000
+      tolerance: 0.000000000001
+    requirements:
+      - metric: absolute_error
+        operator: less_than_or_equal
+        expected: 0.000000000001
+
+  - id: CPU-003
+    name: Bounded multi-worker execution
+    category: cpu
+    timeout_seconds: 10
+    parameters:
+      workload_size: 64
+      block_size_bytes: 16384
+    requirements:
+      - metric: checksum_valid
+        operator: equals
+        expected: true
+
+  - id: MEM-001
+    name: Memory pattern verification
+    category: memory
+    timeout_seconds: 15
+    parameters:
+      allocation_bytes: 8388608
+    requirements:
+      - metric: checksum_valid
+        operator: equals
+        expected: true
+
+  - id: STO-001
+    name: Temporary file round trip
+    category: storage
+    timeout_seconds: 15
+    parameters:
+      size_bytes: 4194304
+      block_size_bytes: 1048576
+    requirements:
+      - metric: checksum_valid
+        operator: equals
+        expected: true
+
+  - id: TEL-001
+    name: Telemetry availability
+    category: telemetry
+    timeout_seconds: 5
+
+  - id: STB-001
+    name: Repeated-workload stability
+    category: stability
+    timeout_seconds: 15
+    parameters:
+      repetitions: 3
+      workload_size: 32
+      block_size_bytes: 8192
+      warn_variability_percent: 50.0
+
+  - id: CFG-001
+    name: Required CPU feature check
+    category: configuration
+    timeout_seconds: 5
+    requirements:
+      - metric: cpu.sse2
+        operator: equals
+        expected: true

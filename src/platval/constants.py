@@ -1,0 +1,7 @@
+"""Versioned contracts shared across toolkit modules."""
+
+TOOL_VERSION = "0.1.0.dev0"
+PLAN_SCHEMA_VERSION = 1
+RESULT_SCHEMA_VERSION = 1
+FINGERPRINT_SCHEMA_VERSION = 1
+NATIVE_PROBE_SCHEMA_VERSION = 1

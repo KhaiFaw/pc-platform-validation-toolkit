@@ -1,0 +1,80 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pc-platform-validation-toolkit"
+version = "0.1.0.dev0"
+description = "A requirements-based command-line toolkit for bounded PC platform validation."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { file = "LICENSE" }
+authors = [{ name = "PC Platform Validation Toolkit contributors" }]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Environment :: Console",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: Microsoft :: Windows :: Windows 11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: System :: Hardware",
+]
+dependencies = [
+  "jinja2>=3.1,<4",
+  "psutil>=6,<8",
+  "pydantic>=2.9,<3",
+  "pyyaml>=6,<7",
+  "rich>=13.9,<15",
+  "typer>=0.12,<1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "hypothesis>=6.112,<7",
+  "mypy>=1.11,<2",
+  "pytest>=8.3,<9",
+  "pytest-cov>=5,<7",
+  "ruff>=0.6,<1",
+  "types-psutil>=6,<8",
+  "types-pyyaml>=6,<7",
+]
+
+[project.scripts]
+platval = "platval.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/platval"]
+
+[tool.pytest.ini_options]
+addopts = "--strict-config --strict-markers -ra"
+testpaths = ["tests"]
+markers = [
+  "hardware: requires access to real platform capabilities",
+  "extended: exceeds the default fast test duration",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["platval"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+fail_under = 80
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src", "tests"]
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["yaml"]
+ignore_missing_imports = true
