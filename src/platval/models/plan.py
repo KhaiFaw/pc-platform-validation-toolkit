@@ -37,6 +37,10 @@ class Severity(StrEnum):
     CRITICAL = "critical"
 
 
+class FaultInjection(StrEnum):
+    CHECKSUM_MISMATCH = "checksum_mismatch"
+
+
 class Requirement(DomainModel):
     metric: str = Field(min_length=1, max_length=128)
     operator: RequirementOperator
@@ -76,6 +80,15 @@ class TestDefinition(DomainModel):
     severity: Severity = Severity.WARNING
     tags: list[str] = Field(default_factory=list)
     safety_limits: SafetyLimits = Field(default_factory=SafetyLimits)
+    fault_injection: FaultInjection | None = None
+
+    @model_validator(mode="after")
+    def fault_is_supported_by_test(self) -> "TestDefinition":
+        if self.fault_injection is not None and not self.enabled:
+            raise ValueError("fault injection cannot be configured on a disabled test")
+        if self.fault_injection is not None and self.id not in {"CPU-001", "CPU-003"}:
+            raise ValueError("checksum fault injection is supported only by CPU-001 or CPU-003")
+        return self
 
 
 class TestPlan(DomainModel):

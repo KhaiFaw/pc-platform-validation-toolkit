@@ -1,0 +1,22 @@
+schema_version: 1
+name: synthetic-failure-demo
+description: Software-only checksum mismatch demonstrating labelled failure evidence.
+sampling_interval_seconds: 0.1
+tests:
+  - id: CPU-001
+    name: Injected integer checksum mismatch
+    description: Deliberately compares against an incorrect checksum.
+    category: cpu
+    timeout_seconds: 5
+    parameters:
+      workers: 1
+      workload_size: 16
+      block_size_bytes: 4096
+    requirements:
+      - metric: checksum_valid
+        operator: equals
+        expected: true
+    fault_injection: checksum_mismatch
+    tags:
+      - synthetic
+      - fault-injection

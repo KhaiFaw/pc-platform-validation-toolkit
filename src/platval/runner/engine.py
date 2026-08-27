@@ -14,7 +14,7 @@ from platval.constants import TOOL_VERSION
 from platval.evaluation import EvaluationError, evaluate_requirement
 from platval.inventory import InventorySnapshot, collect_platform_inventory
 from platval.models.common import DomainModel, Scalar
-from platval.models.plan import TestDefinition, TestPlan
+from platval.models.plan import FaultInjection, TestDefinition, TestPlan
 from platval.models.platform import PlatformIdentity
 from platval.models.results import (
     MetricValue,
@@ -176,12 +176,17 @@ def _execute_case(
         return _inventory_case(snapshot)
     if test.id in {"CPU-001", "CPU-003"}:
         workers_default = 1 if test.id == "CPU-001" else min(2, policy.max_workers)
+        expected_checksum = (
+            "0" * 64
+            if test.fault_injection is FaultInjection.CHECKSUM_MISMATCH
+            else _string_parameter(test, "expected_checksum")
+        )
         result = run_integer_workload(
             IntegerWorkloadConfig(
                 workers=_int_parameter(test, "workers", workers_default),
                 operations=_int_parameter(test, "workload_size", 256),
                 block_size_bytes=_int_parameter(test, "block_size_bytes", 64 * 1024),
-                expected_checksum=_string_parameter(test, "expected_checksum"),
+                expected_checksum=expected_checksum,
             ),
             timeout_seconds=test.timeout_seconds,
             policy=policy,
@@ -330,6 +335,8 @@ def _run_test(
             policy=_case_policy(test, detected_policy),
             token=child_token,
         )
+        if test.fault_injection is FaultInjection.CHECKSUM_MISMATCH and not case.correct:
+            case.reason = "opt-in injected checksum mismatch produced the expected failure"
     except WorkloadCancelled:
         raise
     except WorkloadTimeout as exc:
@@ -376,6 +383,12 @@ def _run_test(
             failure_reason=case.reason,
             exception_summary=exception_summary,
             telemetry_summary=_telemetry_summary(samples),
+            injected=test.fault_injection is not None,
+            evidence_references=(
+                [f"fault-injection:{test.fault_injection.value}"]
+                if test.fault_injection is not None
+                else []
+            ),
         ),
         samples,
     )
@@ -420,6 +433,11 @@ def run_validation_plan(
         telemetry[test.id] = samples
     run_ended_at = datetime.now(UTC)
     statuses = [result.status for result in results]
+    injected_warning = (
+        ["Synthetic fault injection was enabled; injected results are not hardware evidence."]
+        if any(result.injected for result in results)
+        else []
+    )
     return RunExecution(
         run=RunResult(
             run_id=str(uuid.uuid4()),
@@ -432,7 +450,7 @@ def run_validation_plan(
             overall_status=aggregate_status(statuses),
             result_counts=dict(Counter(statuses)),
             test_results=results,
-            warnings=snapshot.limitations,
+            warnings=[*snapshot.limitations, *injected_warning],
             limitations=snapshot.limitations,
         ),
         platform=snapshot.platform,

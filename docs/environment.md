@@ -80,3 +80,41 @@ The repository targets the required Python version rather than silently acceptin
 - Confirmation-gated deletion with recoverable artifact trash: tested
 - Test suite: 59 passed with 86% core coverage
 - Ruff and strict mypy: passed
+
+## Milestone 7 verification
+
+- Deterministic Markdown and self-contained offline HTML reports: implemented
+- Measured, configured, derived, unavailable, and simulated evidence distinctions: verified
+- Accessible inline SVG CPU telemetry charts and text status indicators: verified
+- Atomic immutable report artifacts with database registration and SHA-256 metadata: verified
+- Real quick-plan HTML and Markdown generation: passed with expected WARN/SKIP degradation
+- In-app browser inspection at a 1280 × 720 viewport: passed with no page-level overflow or console errors
+- Test suite: 61 passed with 86.00% core coverage
+- Ruff and strict mypy: passed
+
+## Milestones 8–10 checkpoint
+
+- Immutable baseline lifecycle and source-run protection: implemented
+- Same-platform and same-plan comparison gating: tested
+- Direction-aware regression thresholds, zero-baseline behavior, and functional precedence: tested
+- Opt-in software checksum mismatch with labelled FAIL evidence and reports: tested
+- Windows/Ubuntu GitHub Actions workflow with full-SHA action pins: added; remote run pending push
+- Local clean-verification script and troubleshooting/CI/decision documentation: added
+- Full Python suite: 66 passed with 83.65% core coverage
+- Ruff formatting/lint and strict mypy: passed
+- `scripts\verify.ps1 -UseExistingEnvironment`: passed and cleaned its owned temporary directory
+- Real two-run baseline comparison: compatible, with absolute/percent/threshold evidence retained
+- Genuine opt-in failure demo: produced labelled FAIL plus canonical JSON, Markdown, and HTML artifacts
+- Original local limitation remains: CMake and a C++20 compiler are unavailable, so native verification is delegated to CI until the toolchain is installed
+
+## Milestone 11 final acceptance
+
+- Local release verifier: passed from the prepared Python 3.12 environment
+- Formatting, linting, and strict mypy: passed
+- Portable automated suite: 66 passed
+- `platval doctor`: passed with explicit WARN evidence for the unavailable native probe and trustworthy temperature source
+- Bounded quick plan, SQLite persistence, canonical JSON, Markdown, and HTML reports: passed
+- Immutable baseline creation and compatible self-comparison: passed
+- Deterministic synthetic failure demonstration and labelled report artifacts: passed
+- Owned verification runtime: removed after completion
+- Native configuration, compilation, and CTest: explicit local skip because the documented toolchain remains unavailable; verified by the Windows/Ubuntu CI matrix

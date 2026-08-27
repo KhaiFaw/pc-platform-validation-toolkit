@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PC Platform Validation Report — {{ view.overall_status.value }}</title>
+  <style>
+    :root { color-scheme: light dark; --bg:#f4f6f8; --panel:#fff; --text:#17202a; --muted:#59636e; --border:#cbd2d9; --accent:#1769aa; --pass:#176b36; --fail:#a32020; --warn:#8a5800; --skip:#486581; --error:#7c1d6f; }
+    @media (prefers-color-scheme: dark) { :root { --bg:#11161c; --panel:#19212a; --text:#edf2f7; --muted:#aab6c2; --border:#3c4a57; --accent:#62b0e8; --pass:#72d391; --fail:#ff8b8b; --warn:#ffd166; --skip:#9fc5e3; --error:#ee9de2; } }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif; }
+    main { width:min(1180px, calc(100% - 32px)); margin:28px auto 64px; }
+    h1,h2,h3 { line-height:1.2; }
+    h1 { margin-bottom:8px; }
+    h2 { margin-top:34px; }
+    h3 { margin-top:24px; font-size:1rem; }
+    .subtitle,.muted { color:var(--muted); }
+    .panel { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:20px; margin:16px 0; box-shadow:0 2px 8px rgb(0 0 0 / .06); }
+    .summary { display:grid; grid-template-columns:repeat(auto-fit,minmax(135px,1fr)); gap:10px; }
+    .count { border-left:4px solid var(--border); padding:10px 12px; background:color-mix(in srgb,var(--panel),var(--bg) 28%); }
+    .count strong { display:block; font-size:1.45rem; }
+    .status { font-weight:700; letter-spacing:.03em; }
+    .PASS { color:var(--pass); } .FAIL { color:var(--fail); } .WARN { color:var(--warn); } .SKIP { color:var(--skip); } .ERROR { color:var(--error); }
+    .banner { border-left:5px solid var(--warn); background:color-mix(in srgb,var(--warn),transparent 88%); padding:14px 16px; border-radius:6px; }
+    .table-wrap,.chart { overflow-x:auto; }
+    table { border-collapse:collapse; width:100%; min-width:620px; }
+    th,td { border-bottom:1px solid var(--border); text-align:left; vertical-align:top; padding:9px 10px; }
+    th { color:var(--muted); font-size:.82rem; text-transform:uppercase; letter-spacing:.04em; }
+    code { overflow-wrap:anywhere; }
+    .tag { display:inline-block; border:1px solid var(--border); border-radius:999px; padding:2px 8px; font-size:.78rem; color:var(--muted); }
+    .test-header { display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+    .reason { border-left:4px solid var(--warn); padding-left:12px; }
+    svg { display:block; width:100%; min-width:620px; max-height:280px; color:var(--text); }
+    .chart-grid { stroke:var(--border); stroke-width:1; }
+    .chart-axis { stroke:var(--muted); stroke-width:1.25; }
+    .chart-line { fill:none; stroke:var(--accent); stroke-width:2.5; stroke-linejoin:round; stroke-linecap:round; }
+    .chart-point { fill:var(--accent); stroke:var(--panel); stroke-width:1.5; }
+    .chart-label { fill:var(--muted); font-size:12px; }
+    footer { color:var(--muted); margin-top:32px; border-top:1px solid var(--border); padding-top:16px; }
+    @media print { body { background:#fff; color:#111; } main { width:100%; margin:0; } .panel { box-shadow:none; break-inside:avoid; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>PC Platform Validation Report</h1>
+    <p class="subtitle">Overall outcome: <span class="status {{ view.overall_status.value }}">{{ status_symbols[view.overall_status] }} {{ view.overall_status.value }}</span></p>
+  </header>
+
+  {% if view.contains_simulated_data %}<p class="banner"><strong>Synthetic evidence present.</strong> Injected results are labelled per test and must not be interpreted as hardware observations.</p>{% endif %}
+
+  <section class="panel" aria-labelledby="run-identity"><h2 id="run-identity">Run identity</h2><div class="table-wrap"><table><tbody>
+    <tr><th>Run ID</th><td><code>{{ view.run_id }}</code></td></tr><tr><th>Plan</th><td>{{ view.plan_name }}</td></tr>
+    <tr><th>Plan hash</th><td><code>{{ view.plan_hash }}</code></td></tr><tr><th>Tool version</th><td>{{ view.tool_version }}</td></tr>
+    <tr><th>Started</th><td>{{ view.started_at }}</td></tr><tr><th>Ended</th><td>{{ view.ended_at }}</td></tr>
+  </tbody></table></div></section>
+
+  <section aria-labelledby="summary"><h2 id="summary">Result summary</h2><div class="summary">
+    {% for status, count in view.result_counts.items() %}<div class="count"><span class="status {{ status }}">{{ status }}</span><strong>{{ count }}</strong></div>{% endfor %}
+  </div></section>
+
+  <section class="panel" aria-labelledby="platform"><h2 id="platform">Sanitized platform</h2><div class="table-wrap"><table>
+    <thead><tr><th>Field</th><th>Value</th><th>Unit</th><th>Classification</th><th>Source</th></tr></thead><tbody>
+    {% for item in view.platform_values %}<tr><td>{{ item.name }}</td><td>{{ item.display_value }}</td><td>{{ item.unit or '—' }}</td><td><span class="tag">{{ item.classification.value }}</span></td><td>{{ item.source or '—' }}</td></tr>{% endfor %}
+    </tbody></table></div></section>
+
+  <h2>Test evidence</h2>
+  {% for test in view.tests %}<article class="panel" id="test-{{ test.test_id }}">
+    <div class="test-header"><h2>{{ test.test_id }}</h2><span class="status {{ test.status.value }}">{{ status_symbols[test.status] }} {{ test.status.value }}</span></div>
+    <p class="muted">Duration {{ '%.6f'|format(test.duration_seconds) }} seconds · Injected {{ 'yes' if test.injected else 'no' }}</p>
+    {% if test.failure_reason %}<p class="reason"><strong>Reason:</strong> {{ test.failure_reason }}</p>{% endif %}
+    {% if test.exception_summary %}<p><strong>Exception summary:</strong> <code>{{ test.exception_summary }}</code></p>{% endif %}
+    <h3>Measurements</h3>
+    {% if test.metrics %}<div class="table-wrap"><table><thead><tr><th>Metric</th><th>Value</th><th>Unit</th><th>Classification</th><th>Source</th></tr></thead><tbody>
+      {% for item in test.metrics %}<tr><td>{{ item.name }}</td><td>{{ item.display_value }}</td><td>{{ item.unit or '—' }}</td><td><span class="tag">{{ item.classification.value }}</span></td><td>{{ item.source or '—' }}</td></tr>{% endfor %}
+    </tbody></table></div>{% else %}<p class="muted">No workload measurements were recorded.</p>{% endif %}
+    <h3>Requirements</h3>
+    {% if test.requirements %}<div class="table-wrap"><table><thead><tr><th>Result</th><th>Metric</th><th>Operator</th><th>Configured expected</th><th>Measured actual</th><th>Unit</th></tr></thead><tbody>
+      {% for req in test.requirements %}<tr><td class="status {{ 'PASS' if req.passed else 'FAIL' }}">{{ 'PASS' if req.passed else 'FAIL' }}</td><td>{{ req.metric }}</td><td>{{ req.operator }}</td><td>{{ req.expected }} <span class="tag">{{ req.expected_classification.value }}</span></td><td>{{ req.actual }} <span class="tag">{{ req.actual_classification.value }}</span></td><td>{{ req.unit or '—' }}</td></tr>{% endfor %}
+    </tbody></table></div>{% else %}<p class="muted">No explicit requirements were configured.</p>{% endif %}
+    <h3>Telemetry</h3><div class="table-wrap"><table><thead><tr><th>Derived statistic</th><th>Value</th><th>Unit</th><th>Source</th></tr></thead><tbody>
+      {% for item in test.telemetry_values %}<tr><td>{{ item.name }}</td><td>{{ item.display_value }}</td><td>{{ item.unit or '—' }}</td><td>{{ item.source or '—' }}</td></tr>{% endfor %}
+    </tbody></table></div>
+    {% if test.unavailable_telemetry %}<p><strong>Unavailable telemetry:</strong> {{ test.unavailable_telemetry|join(', ') }}.</p>{% endif %}
+    {% if test.telemetry_chart_svg %}<div class="chart">{{ test.telemetry_chart_svg|safe }}</div>{% endif %}
+    <p><strong>Evidence references:</strong> {{ test.evidence_references|join(', ') if test.evidence_references else 'none recorded' }}</p>
+  </article>{% endfor %}
+
+  <section class="panel"><h2>Warnings</h2>{% if view.warnings %}<ul>{% for item in view.warnings %}<li>{{ item }}</li>{% endfor %}</ul>{% else %}<p>None recorded.</p>{% endif %}
+  <h2>Limitations</h2>{% if view.limitations %}<ul>{% for item in view.limitations %}<li>{{ item }}</li>{% endfor %}</ul>{% else %}<p>None recorded.</p>{% endif %}</section>
+  <section class="panel"><h2>Interpretation notes</h2><ul><li>Results are local software observations, not hardware certification.</li><li>A failed test supports further diagnosis but does not alone prove defective hardware.</li><li>Timing can be influenced by scheduler activity, power policy, background load, and unavailable thermal data.</li><li>Missing telemetry is reported as unavailable and is never represented as numeric zero.</li></ul></section>
+  <footer>PC Platform Validation Toolkit {{ view.tool_version }} · No vendor endorsement or hardware certification is implied.</footer>
+</main>
+</body>
+</html>

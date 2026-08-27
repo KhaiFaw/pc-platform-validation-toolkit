@@ -11,12 +11,12 @@ The project is built in verified increments. A milestone is complete only when i
 | 4 | Bounded workload engine and safety enforcement | Correctness, timeout, cancellation, and cleanup tests | Complete |
 | 5 | Plan loader, runner, telemetry, evaluation | Quick synthetic and functional plans | Complete |
 | 6 | SQLite persistence and JSON artifacts | Transactional repository round trips | Complete |
-| 7 | Markdown and self-contained HTML reports | Rendered report inspection | Not started |
-| 8 | Baselines and regression analysis | Same-platform comparison tests | Not started |
-| 9 | Opt-in fault injection | Deterministic failure integration test | Not started |
-| 10 | CI and full documentation | Windows/Ubuntu synthetic workflow | Not started |
-| 11 | Clean final verification | Acceptance checklist with captured commands | Not started |
+| 7 | Markdown and self-contained HTML reports | Rendered report inspection | Complete |
+| 8 | Baselines and regression analysis | Same-platform comparison tests | Complete |
+| 9 | Opt-in fault injection | Deterministic failure integration test | Complete |
+| 10 | CI and full documentation | Windows/Ubuntu synthetic workflow | Complete locally; remote workflow not yet run |
+| 11 | Clean final verification | Isolated install, quality gates, end-to-end workflow, artifact checks, and CI | Complete locally; remote CI verifies native builds |
 
-## Immediate continuation point
+## Completed MVP scope
 
-Milestone 6 is complete with normalized transactional storage and canonical JSON evidence. Continue with Milestone 7 by rendering stored runs into Markdown and self-contained HTML, adding labelled telemetry charts and limitations, registering each derived artifact, and visually inspecting the HTML rather than relying only on string assertions.
+Milestones 0–11 form the portfolio-quality MVP. Baselines are immutable and compatibility-gated; comparison policies store absolute and percent differences against explicit thresholds; the software-only failure demo is labelled and report-backed; and SHA-pinned Windows/Ubuntu CI exercises both the portable Python toolkit and native decoder. The local release verifier recreates the documented setup in an isolated environment and exercises the full evidence workflow. The native build remains an explicit local skip on machines without CMake and a C++20 compiler.

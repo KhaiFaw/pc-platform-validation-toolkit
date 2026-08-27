@@ -34,6 +34,14 @@ class BaselineSourceError(PersistenceError):
     """A run is protected because a baseline references it."""
 
 
+class BaselineNotFoundError(PersistenceError):
+    """The requested baseline is absent."""
+
+
+class BaselineExistsError(PersistenceError):
+    """A baseline name is already registered and cannot be replaced."""
+
+
 class ArtifactRecord(DomainModel):
     kind: str = Field(min_length=1, max_length=64)
     relative_path: str = Field(min_length=1, max_length=500)
@@ -54,6 +62,17 @@ class RunSummary(DomainModel):
 class StoredRun(DomainModel):
     execution: RunExecution
     artifacts: list[ArtifactRecord] = Field(default_factory=list)
+
+
+class BaselineRecord(DomainModel):
+    name: str
+    source_run_id: str
+    created_at: datetime
+    platform_fingerprint: str
+    plan_hash: str
+    plan_name: str
+
+    _created_at_is_aware = field_validator("created_at")(require_aware_timestamp)
 
 
 class SQLiteRepository:
@@ -171,6 +190,7 @@ class SQLiteRepository:
                         result.model_dump_json(),
                     ),
                 )
+
                 for name, metric in result.measured_values.items():
                     connection.execute(
                         """
@@ -238,6 +258,30 @@ class SQLiteRepository:
                         artifact.size_bytes,
                     ),
                 )
+
+    def add_artifact(self, run_id: str, artifact: ArtifactRecord) -> None:
+        """Register one immutable derived artifact for an existing run."""
+        self.initialize()
+        with self._connection() as connection:
+            connection.execute("BEGIN IMMEDIATE")
+            run_row = connection.execute(
+                "SELECT 1 FROM runs WHERE run_id = ?", (run_id,)
+            ).fetchone()
+            if run_row is None:
+                raise RunNotFoundError(f"run {run_id!r} was not found")
+            connection.execute(
+                """
+                INSERT INTO artifacts(run_id, kind, relative_path, sha256, size_bytes)
+                VALUES (?, ?, ?, ?, ?)
+                """,
+                (
+                    run_id,
+                    artifact.kind,
+                    artifact.relative_path,
+                    artifact.sha256,
+                    artifact.size_bytes,
+                ),
+            )
 
     def get_run(self, run_id: str) -> StoredRun:
         self.initialize()
@@ -307,6 +351,67 @@ class SQLiteRepository:
             )
             for row in rows
         ]
+
+    def create_baseline(self, name: str, source_run_id: str) -> BaselineRecord:
+        """Create an immutable named pointer to a known-good source run."""
+        self.initialize()
+        created_at = datetime.now(UTC)
+        with self._connection() as connection:
+            connection.execute("BEGIN IMMEDIATE")
+            if connection.execute("SELECT 1 FROM baselines WHERE name = ?", (name,)).fetchone():
+                raise BaselineExistsError(f"baseline {name!r} already exists and was not replaced")
+            source = connection.execute(
+                """
+                SELECT platform_fingerprint, plan_hash, plan_name
+                FROM runs WHERE run_id = ?
+                """,
+                (source_run_id,),
+            ).fetchone()
+            if source is None:
+                raise RunNotFoundError(f"run {source_run_id!r} was not found")
+            connection.execute(
+                "INSERT INTO baselines(name, source_run_id, created_at) VALUES (?, ?, ?)",
+                (name, source_run_id, created_at.isoformat()),
+            )
+        return BaselineRecord(
+            name=name,
+            source_run_id=source_run_id,
+            created_at=created_at,
+            platform_fingerprint=source["platform_fingerprint"],
+            plan_hash=source["plan_hash"],
+            plan_name=source["plan_name"],
+        )
+
+    def get_baseline(self, name: str) -> BaselineRecord:
+        self.initialize()
+        with self._connection() as connection:
+            row = connection.execute(
+                """
+                SELECT b.name, b.source_run_id, b.created_at,
+                       r.platform_fingerprint, r.plan_hash, r.plan_name
+                FROM baselines AS b
+                JOIN runs AS r ON r.run_id = b.source_run_id
+                WHERE b.name = ?
+                """,
+                (name,),
+            ).fetchone()
+        if row is None:
+            raise BaselineNotFoundError(f"baseline {name!r} was not found")
+        return BaselineRecord.model_validate(dict(row))
+
+    def list_baselines(self) -> list[BaselineRecord]:
+        self.initialize()
+        with self._connection() as connection:
+            rows = connection.execute(
+                """
+                SELECT b.name, b.source_run_id, b.created_at,
+                       r.platform_fingerprint, r.plan_hash, r.plan_name
+                FROM baselines AS b
+                JOIN runs AS r ON r.run_id = b.source_run_id
+                ORDER BY b.name
+                """
+            ).fetchall()
+        return [BaselineRecord.model_validate(dict(row)) for row in rows]
 
     def delete_run(self, run_id: str) -> None:
         self.initialize()

@@ -65,9 +65,69 @@ def test_run_command_returns_structured_json(tmp_path: Path) -> None:
     assert show_result.exit_code == 0, show_result.output
     assert json.loads(show_result.output)["execution"]["run"]["run_id"] == run_id
 
+    report_result = runner.invoke(
+        app,
+        ["report", run_id, "--format", "html", "--runtime-dir", runtime, "--json"],
+    )
+    assert report_result.exit_code == 0, report_result.output
+    report = json.loads(report_result.output)
+    assert report["format"] == "html"
+    assert Path(report["path"]).is_file()
+    assert report["artifact"]["kind"] == "report_html"
+
     delete_result = runner.invoke(
         app, ["runs", "delete", run_id, "--runtime-dir", runtime, "--yes"]
     )
     assert delete_result.exit_code == 0, delete_result.output
     assert "artifacts moved" in delete_result.output
     assert any((tmp_path / "runtime" / "trash").iterdir())
+
+
+def test_baseline_cli_creates_lists_and_compares(tmp_path: Path) -> None:
+    runtime = str(tmp_path / "runtime")
+    run_result = runner.invoke(
+        app,
+        ["run", "--plan", "configs/quick.yaml", "--runtime-dir", runtime, "--json"],
+    )
+    assert run_result.exit_code == 0, run_result.output
+    run_id = json.loads(run_result.output)["execution"]["run"]["run_id"]
+
+    create_result = runner.invoke(
+        app,
+        [
+            "baseline",
+            "create",
+            "--from-run",
+            run_id,
+            "--name",
+            "known-good",
+            "--runtime-dir",
+            runtime,
+            "--json",
+        ],
+    )
+    assert create_result.exit_code == 0, create_result.output
+    assert json.loads(create_result.output)["name"] == "known-good"
+
+    list_result = runner.invoke(app, ["baseline", "list", "--runtime-dir", runtime, "--json"])
+    assert list_result.exit_code == 0, list_result.output
+    assert json.loads(list_result.output)[0]["source_run_id"] == run_id
+
+    compare_result = runner.invoke(
+        app,
+        [
+            "compare",
+            "--baseline",
+            "known-good",
+            "--run",
+            run_id,
+            "--runtime-dir",
+            runtime,
+            "--json",
+        ],
+    )
+    assert compare_result.exit_code == 0, compare_result.output
+    comparison = json.loads(compare_result.output)
+    assert comparison["platform_compatible"] is True
+    assert comparison["plan_compatible"] is True
+    assert comparison["comparisons"]

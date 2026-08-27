@@ -35,7 +35,7 @@ The concurrent CPU workload hashes blocks larger than Python's GIL-release thres
 
 The runner loads one size-bounded YAML document into strict models and hashes its canonical JSON representation. It inventories the platform once, then dispatches stable test IDs to bounded workload adapters. Each enabled test owns a child cancellation token linked to the run token, so a test timeout cannot accidentally cancel unrelated tests while run-level cancellation still propagates.
 
-A psutil sampler runs on a separate bounded thread during each enabled test. It samples immediately, uses monotonic elapsed time, caps stored samples at 10,000, and joins before the test result is finalized. Optional sensor failures are recorded on samples. Raw samples remain alongside the canonical result in `RunExecution`; Milestone 6 will persist them transactionally.
+A psutil sampler runs on a separate bounded thread during each enabled test. It samples immediately, uses monotonic elapsed time, caps stored samples at 10,000, and joins before the test result is finalized. Optional sensor failures are recorded on samples. Raw samples remain alongside the canonical result in `RunExecution` and are persisted transactionally.
 
 Workload correctness is evaluated before configured requirements. Missing metrics remain `None`, never zero. Explicitly unmet requirements produce FAIL, invalid operand types produce ERROR, unavailable optional capabilities produce SKIP or WARN, and high stability variation is a soft WARN.
 
@@ -46,6 +46,26 @@ SQLite schema version 1 stores an immutable platform snapshot per run plus norma
 The artifact service writes `runs/<run-id>/run.json.tmp`, flushes and synchronizes it, then atomically replaces it with `run.json` before committing matching database metadata. A database failure removes only the newly owned artifact directory. The canonical JSON hash is stored in the artifacts table rather than recursively embedding its own digest.
 
 Run deletion is confirmation-gated at the CLI. Database rows cascade only after checking baseline references; the owned artifact directory is moved into `.platval/trash/` instead of being irreversibly erased. Platform snapshots are per-run because transient evidence such as free space and power plan may differ even when the stable platform fingerprint is unchanged.
+
+## Reporting boundary
+
+Reports are pure projections of stored canonical evidence; report generation never reruns inventory or workloads. A typed view model labels observations as measured, configured, derived, unavailable, or simulated before format-specific rendering. Requirement tables keep configured expectations beside measured actual values, and missing telemetry remains explicit.
+
+Markdown and HTML use the same view. HTML contains all CSS and accessible SVG charts inline and has no scripts, external fonts, CDN assets, or server dependency. Derived report files are atomically created inside the owning run directory, hashed, and registered in SQLite. Existing files are never overwritten. JSON reporting returns the original canonical `run.json` artifact rather than producing a duplicate. See [ADR-0003](decisions/0003-static-offline-reports.md).
+
+## Baselines and regression
+
+A baseline is an immutable database pointer to its source run. Repository joins expose the source platform fingerprint and plan hash without duplicating canonical evidence. Comparisons load both stored executions and withhold numeric conclusions unless those identities match. Only registered numeric metrics with a known direction are compared; boolean correctness is left to normal result status.
+
+The comparator records baseline/current values, signed absolute and percent differences, metric direction, thresholds, and classification. Median-based stability metrics are used when the workload provides them. Functional FAIL or ERROR outranks performance classification, zero baselines cannot produce a percentage, and explanatory warnings avoid causal claims.
+
+## Fault-injection boundary
+
+Fault injection is an explicit typed plan field and defaults to absent. The implemented mode changes only the expected checksum supplied to a small deterministic CPU workload. It does not alter the computation, machine configuration, or operating system. The runner labels the result, evidence reference, and run warning; all report formats preserve the synthetic distinction. `platval demo failure` constructs this plan internally so installed packages do not depend on a repository-relative config file.
+
+## Verification boundary
+
+The local PowerShell verifier can use the project environment or create an isolated one, performs Python quality gates, conditionally verifies native code when CMake exists, and generates a synthetic failure report. CI enforces the native build on GitHub-hosted Windows and Ubuntu but excludes hardware and extended tests because hosted telemetry and timing are not representative evidence.
 
 ## Data handling
 

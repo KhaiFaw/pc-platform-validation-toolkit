@@ -1,0 +1,26 @@
+name: Feature request
+description: Propose a bounded validation capability or evidence improvement.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: Validation need
+      description: What engineering decision would this help someone make?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Explain the workload bounds, evidence produced, and unavailable-capability behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: Safety and maintenance considerations
+      description: Note hardware load, privacy, platform dependencies, and ongoing maintenance cost.
+    validations:
+      required: true

@@ -18,8 +18,12 @@ ERROR takes precedence over FAIL, then WARN, PASS, and SKIP. PASS mixed with opt
 
 ## Measurement limits
 
-Performance measurements are local observations. Background load, scheduler activity, power policy, thermal state, storage caching, and unavailable sensors can affect results. Stability uses median duration and median absolute deviation; high variation is initially a warning. Baseline comparison will use conservative thresholds and will not imply causation.
+Performance measurements are local observations. Background load, scheduler activity, power policy, thermal state, storage caching, and unavailable sensors can affect results. Stability uses median duration and median absolute deviation; high variation is initially a warning. Baseline comparisons require matching platform fingerprints and plan hashes, use registered metric directions, and default to 10% warning and 20% failure thresholds. Zero baselines and incompatible identities do not produce a misleading percentage.
 
 ## Fault injection
 
-The current integration suite safely demonstrates an impossible requirement. Milestone 9 will add explicitly labelled opt-in fault-injection paths for checksum, telemetry, schema, and timeout behavior. Synthetic evidence must never be presented as a real hardware result.
+The integration suite exercises both an impossible requirement and the explicit checksum fault mode. Injection is absent by default, supported only on bounded integer tests, and labelled in structured results, evidence references, warnings, and reports. `platval demo failure` returns success only after producing the intended FAIL evidence and immutable reports; the FAIL is not presented as a hardware result.
+
+## Continuous integration
+
+Windows and Ubuntu jobs run formatting, linting, strict typing, and portable tests with coverage, then build and test the native decoder. `hardware` and `extended` tests are excluded because hosted machines cannot provide representative sensor or performance evidence. The synthetic failure demo supplies a safe generated report artifact without requiring secrets.

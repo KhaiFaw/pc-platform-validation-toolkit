@@ -28,3 +28,15 @@ All notable changes will be documented here. The project has not made a stable r
 - SQLite schema version 1 with normalized runs, platform snapshots, tests, metrics, requirements, telemetry, artifacts, and baseline references.
 - Atomic canonical `run.json` artifacts with SHA-256 metadata.
 - Persisted run listing, inspection, and confirmation-gated recoverable deletion.
+- Deterministic report view model that labels measured, configured, derived, unavailable, and simulated evidence.
+- Immutable Markdown and self-contained HTML report artifacts registered with SHA-256 metadata.
+- Accessible inline SVG CPU telemetry charts with textual status and axis labels.
+- `platval report <run-id> --format html|markdown|json` command.
+- Immutable named baselines tied to source run, platform fingerprint, and plan hash.
+- Conservative metric comparison with configurable warning/failure thresholds and compatibility withholding.
+- `platval baseline create|list|show` and `platval compare` commands.
+- Opt-in checksum fault injection and `platval demo failure` with labelled reports.
+- SHA-pinned Windows/Ubuntu CI for Python checks, native decoder tests, and generated report evidence.
+- Clean verification script, CI rationale, troubleshooting guide, and remaining architecture decisions.
+- End-to-end release verification covering diagnostics, quick validation, every report format, baselines, comparison, artifact existence, and the synthetic failure path.
+- GitHub project badges, contribution guidance, structured issue forms, and a pull-request checklist.

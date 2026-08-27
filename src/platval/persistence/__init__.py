@@ -5,9 +5,13 @@ from platval.persistence.artifacts import (
     delete_run_recoverably,
     load_stored_run,
     persist_execution,
+    write_derived_artifact,
 )
 from platval.persistence.repository import (
     ArtifactRecord,
+    BaselineExistsError,
+    BaselineNotFoundError,
+    BaselineRecord,
     BaselineSourceError,
     PersistenceError,
     RunNotFoundError,
@@ -20,6 +24,9 @@ from platval.persistence.repository import (
 __all__ = [
     "ArtifactError",
     "ArtifactRecord",
+    "BaselineExistsError",
+    "BaselineNotFoundError",
+    "BaselineRecord",
     "BaselineSourceError",
     "PersistenceError",
     "RunNotFoundError",
@@ -30,4 +37,5 @@ __all__ = [
     "delete_run_recoverably",
     "load_stored_run",
     "persist_execution",
+    "write_derived_artifact",
 ]

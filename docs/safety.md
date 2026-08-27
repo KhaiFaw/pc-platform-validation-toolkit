@@ -25,3 +25,7 @@ No trustworthy temperature source is currently available on the development mach
 Workloads verify application-visible computation, memory patterns, and filesystem round trips. A failure justifies further diagnostics but does not by itself prove that a processor, memory module, or storage device is defective. Timing variation can be caused by scheduling, power management, background activity, or thermal conditions and should initially produce a warning.
 
 The toolkit does not access model-specific registers, raw disks, firmware settings, voltage, frequency controls, power limits, product identifiers, or operating-system security settings. Normal operation does not require administrator privileges.
+
+## Fault injection
+
+Fault injection is disabled unless a plan explicitly selects a supported mode or the user invokes `platval demo failure`. The checksum demonstration changes only an in-memory expected digest for one small bounded workload. It does not corrupt files, alter the actual computation, change hardware state, or weaken normal validation plans. Injected results are labelled synthetic throughout persistence and reporting.

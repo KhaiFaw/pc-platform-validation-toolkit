@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Python 3.12 / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install project and development tools
+        run: python -m pip install -e ".[dev]"
+
+      - name: Check formatting
+        run: ruff format --check src tests
+
+      - name: Lint
+        run: ruff check src tests
+
+      - name: Type check
+        run: mypy src tests
+
+      - name: Run portable automated tests
+        run: pytest -m "not hardware and not extended" --cov=platval --cov-report=term
+
+      - name: Configure native probe
+        run: cmake -S cpp/cpuid_probe -B cpp/cpuid_probe/build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build native probe
+        run: cmake --build cpp/cpuid_probe/build --config Release
+
+      - name: Run native decoder tests
+        run: ctest --test-dir cpp/cpuid_probe/build -C Release --output-on-failure
+
+      - name: Exercise end-to-end evidence workflow
+        shell: pwsh
+        run: |
+          $runtime = '.ci-acceptance'
+          python -m platval.cli doctor --runtime-dir $runtime
+          if ($LASTEXITCODE -ne 0) { throw 'Capability diagnostics failed.' }
+          $stored = python -m platval.cli run --plan configs/quick.yaml --runtime-dir $runtime --json | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0) { throw 'Quick plan failed.' }
+          $runId = $stored.execution.run.run_id
+          foreach ($format in @('json', 'markdown', 'html')) {
+            python -m platval.cli report $runId --format $format --runtime-dir $runtime --json | Out-Null
+            if ($LASTEXITCODE -ne 0) { throw "$format report failed." }
+          }
+          python -m platval.cli baseline create --from-run $runId --name ci-known-good --runtime-dir $runtime --json | Out-Null
+          if ($LASTEXITCODE -ne 0) { throw 'Baseline creation failed.' }
+          python -m platval.cli compare --baseline ci-known-good --run $runId --runtime-dir $runtime --json | Out-Null
+          if ($LASTEXITCODE -ne 0) { throw 'Baseline comparison failed.' }
+
+      - name: Generate synthetic failure report
+        run: python -m platval.cli demo failure --runtime-dir .ci-runtime
+
+      - name: Upload generated report evidence
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: synthetic-failure-report
+          path: .ci-runtime/runs/*/report.*
+          include-hidden-files: true
+          if-no-files-found: error
