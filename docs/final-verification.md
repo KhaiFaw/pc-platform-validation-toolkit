@@ -1,5 +1,15 @@
 # Final verification record
 
+## Portfolio verification — 20 September 2026
+
+Base commit `73c14ff`, with local documentation/evidence additions. A new isolated Python 3.12 environment installed the documented `.[dev]` dependencies. Results: 66 tests passed, 83.65% combined statement/branch coverage under the existing coverage configuration, Ruff lint and formatting passed, and mypy passed for 57 files. The coverage percentage is this run's result, not a maintained badge or branch-only percentage.
+
+The quick plan produced 7 PASS, 1 WARN, 1 SKIP and no failures/errors. Native probe and temperature telemetry were unavailable. JSON, Markdown and HTML reports were generated; baseline creation and a same-run comparison succeeded; the opt-in demo generated labelled FAIL evidence. See [capture notes](../examples/CAPTURE_NOTES.md). A same-run comparison exercises persistence and comparison plumbing, not regression sensitivity across independent sessions.
+
+No local CMake/C++20 toolchain was available, so no local native build is claimed. [Published CI run 33099625839](https://github.com/KhaiFaw/pc-platform-validation-toolkit/actions/runs/33099625839) passed Windows and Ubuntu for the unchanged native source at `73c14ff`. The documentation changes have not been pushed or remotely tested.
+
+## Repeatable acceptance procedure
+
 Milestone 11 closes the portfolio-quality MVP with a clean, repeatable acceptance path. The repository verifier creates an isolated Python environment by default, installs the package and development tools, and then checks:
 
 - formatting, linting, strict typing, and portable automated tests;

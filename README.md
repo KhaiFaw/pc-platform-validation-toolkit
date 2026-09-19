@@ -1,19 +1,41 @@
 # PC Platform Validation Toolkit
 
 [![CI](https://github.com/KhaiFaw/pc-platform-validation-toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/KhaiFaw/pc-platform-validation-toolkit/actions/workflows/ci.yml)
-[![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![C++20](https://img.shields.io/badge/C%2B%2B-20-00599C?logo=cplusplus&logoColor=white)](cpp/cpuid_probe)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A requirements-based command-line toolkit for collecting sanitized PC inventory, running bounded functional validation, preserving evidence, and comparing compatible runs against an immutable known-good baseline.
+
+**Status:** functional MVP, `0.1.0.dev0`. Current reports distinguish measured results, unavailable capabilities and deliberately injected failures.
+
+<img src="docs/images/architecture.png" width="640" alt="YAML plans and inventory feed bounded workloads, immutable reports and compatible baseline comparisons">
+
+[Measured report](examples/measured/report.md) · [Injected-failure report](examples/injected/report.md) · [Verification](docs/final-verification.md) · [Portfolio](https://github.com/KhaiFaw)
 
 ## Project status
 
 Milestones 0–11 are implemented. The Python toolkit includes inventory, capability discovery, bounded CPU/memory/storage workloads, telemetry, explicit requirement evaluation, SQLite persistence, JSON/Markdown/HTML reports, conservative baseline comparisons, and a software-only fault-injection demonstration. GitHub Actions verifies portable Python behavior and the C++ decoder on Windows and Ubuntu.
 
+Version `0.1.0.dev0` is a functional MVP, not a stable release. On 20 September 2026, a fresh local dependency installation passed 66 tests, lint, formatting and strict typing. The local quick plan returned seven PASS, one WARN and one SKIP; unavailable capabilities remain visible in the result.
+
 The optional native CPUID probe source is complete but has not been compiled on the original development machine because CMake and a C++20 compiler are unavailable there. Missing native or sensor capabilities degrade to explicit WARN or SKIP evidence.
 
 This is a functional validation and engineering-evidence tool. It is not an unrestricted stress test, overclocking utility, universal benchmark, monitoring replacement, or hardware-certification system.
+
+## Engineering problem and contributions
+
+The useful question is whether an explicit requirement holds under a repeatable, resource-bounded test—and whether the evidence can explain a failure later. The project-specific code defines typed plans/results, lifecycle and safety controls, requirement evaluation, immutable artifacts, baseline compatibility and a labelled failure demonstration.
+
+Typer provides the CLI, Pydantic validates models, psutil provides portable observations, Jinja2 renders reports and SQLite stores local history. The optional C++ probe decodes processor information. These dependencies are credited as infrastructure, not claimed as original implementations.
+
+## Current evidence
+
+![Actual quick-plan HTML report: WARN, with seven passes, one warning and one skip](docs/images/measured-report.png)
+
+[Open the measured Markdown report](examples/measured/report.md), or download and open the [self-contained HTML](examples/measured/report.html) locally. The capture used Windows 11, Python 3.12, the checked-in quick plan and no native probe. It contains sanitized configuration details, not usernames or serial numbers.
+
+![Actual injected-failure HTML report with synthetic evidence labelled](docs/images/injected-report.png)
+
+The [injected report](examples/injected/report.md) deliberately fails a checksum requirement. It proves the software failure/reporting path, not a faulty CPU. [Capture notes](examples/CAPTURE_NOTES.md) distinguish measured observations, missing capabilities and the baseline self-comparison.
 
 ## Architecture
 
@@ -112,7 +134,22 @@ Read [safety.md](docs/safety.md), [results-guide.md](docs/results-guide.md), and
 
 ## Roadmap
 
-Milestone 11 is the remaining clean acceptance pass: reinstall from the documented setup, build the native probe on a supported compiler, exercise the quick/baseline/demo workflows, review generated artifacts, and record any environment-specific limitations without overstating conclusions.
+The MVP acceptance path is implemented and has been exercised locally; the published commit also passed the Windows/Ubuntu CI matrix. Next: collect repeated, independently controlled baseline sessions, validate native-probe integration on a physical development machine, and establish a release policy. Timing variation alone cannot identify a hardware cause.
+
+## Repository guide
+
+| Path | Responsibility |
+|---|---|
+| `src/platval/runner/` | Plan loading, lifecycle and result assembly |
+| `src/platval/workloads/` | Bounded CPU, memory and storage work |
+| `src/platval/evaluation/` | Explicit requirement outcomes |
+| `src/platval/persistence/` | SQLite and immutable artifacts |
+| `src/platval/reporting/` | Views, templates and derived reports |
+| `src/platval/baselines/` | Compatibility and comparisons |
+| `cpp/cpuid_probe/` | Optional native probe and decoder tests |
+| `tests/` | Unit and integration checks |
+
+Architectural trade-offs are recorded in [the decision log](docs/decisions/): subprocess isolation, local SQLite, static offline reports, capability-based sensors and bounded validation.
 
 ## License
 

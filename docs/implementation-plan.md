@@ -14,7 +14,7 @@ The project is built in verified increments. A milestone is complete only when i
 | 7 | Markdown and self-contained HTML reports | Rendered report inspection | Complete |
 | 8 | Baselines and regression analysis | Same-platform comparison tests | Complete |
 | 9 | Opt-in fault injection | Deterministic failure integration test | Complete |
-| 10 | CI and full documentation | Windows/Ubuntu synthetic workflow | Complete locally; remote workflow not yet run |
+| 10 | CI and full documentation | Windows/Ubuntu synthetic workflow | Published commit `73c14ff` passed both platforms; see run 33099625839 |
 | 11 | Clean final verification | Isolated install, quality gates, end-to-end workflow, artifact checks, and CI | Complete locally; remote CI verifies native builds |
 
 ## Completed MVP scope

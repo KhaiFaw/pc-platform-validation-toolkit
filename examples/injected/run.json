@@ -1,0 +1,158 @@
+{
+  "run": {
+    "schema_version": 1,
+    "run_id": "525833a5-b968-4c17-9c79-67008c7a79dc",
+    "plan_name": "synthetic-failure-demo",
+    "plan_hash": "4cf96042777ea34c303cd0799e6cd59afaf82243b5b39b1cbb7233332448a0bc",
+    "tool_version": "0.1.0.dev0",
+    "platform_fingerprint": "348c4b1169323bada4c7ae3046ffd4c72369a71b9f3f08142e1f8e92acff9a91",
+    "started_at": "2026-09-19T20:24:30.928839Z",
+    "ended_at": "2026-09-19T20:24:30.993381Z",
+    "overall_status": "FAIL",
+    "result_counts": {
+      "FAIL": 1
+    },
+    "test_results": [
+      {
+        "test_id": "CPU-001",
+        "started_at": "2026-09-19T20:24:30.991381Z",
+        "ended_at": "2026-09-19T20:24:30.993381Z",
+        "duration_seconds": 0.0,
+        "status": "FAIL",
+        "measured_values": {
+          "checksum_valid": {
+            "value": false,
+            "unit": null,
+            "source": "cpu_integer"
+          },
+          "operations": {
+            "value": 16,
+            "unit": "blocks",
+            "source": "cpu_integer"
+          },
+          "workers": {
+            "value": 1,
+            "unit": "workers",
+            "source": "cpu_integer"
+          },
+          "measured_duration": {
+            "value": 0.0,
+            "unit": "seconds",
+            "source": "cpu_integer"
+          },
+          "operations_per_second": {
+            "value": 16000000000000.0,
+            "unit": "blocks/s",
+            "source": "cpu_integer"
+          }
+        },
+        "requirements": [
+          {
+            "metric": "checksum_valid",
+            "operator": "equals",
+            "expected": true,
+            "actual": false,
+            "unit": null,
+            "passed": false,
+            "explanation": "actual value False did not satisfy equals True"
+          }
+        ],
+        "failure_reason": "opt-in injected checksum mismatch produced the expected failure",
+        "evidence_references": [
+          "fault-injection:checksum_mismatch"
+        ],
+        "exception_summary": null,
+        "telemetry_summary": {
+          "sample_count": 1,
+          "available_metrics": [
+            "cpu_utilization",
+            "per_core_utilization",
+            "cpu_frequency",
+            "process_cpu",
+            "process_memory",
+            "available_memory",
+            "disk_free"
+          ],
+          "unavailable_metrics": [
+            "temperature"
+          ],
+          "collector_error_count": 0
+        },
+        "injected": true
+      }
+    ],
+    "artifact_manifest": [],
+    "warnings": [
+      "A trustworthy temperature source is unavailable; runtime limits remain conservative.",
+      "Native CPUID probe is not installed; CPU feature detail is unavailable.",
+      "Synthetic fault injection was enabled; injected results are not hardware evidence."
+    ],
+    "limitations": [
+      "A trustworthy temperature source is unavailable; runtime limits remain conservative.",
+      "Native CPUID probe is not installed; CPU feature detail is unavailable."
+    ]
+  },
+  "platform": {
+    "tool_version": "0.1.0.dev0",
+    "operating_system": "Windows",
+    "operating_system_version": "11",
+    "operating_system_build": "10.0.26200",
+    "python_version": "3.12.14",
+    "architecture": "AMD64",
+    "cpu_vendor": null,
+    "cpu_brand": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "logical_processor_count": 12,
+    "physical_processor_count": 6,
+    "caches": [],
+    "total_memory_bytes": 33594245120,
+    "storage_volume": {
+      "filesystem": "NTFS",
+      "capacity_bytes": 1023094550528,
+      "free_bytes": 344949551104
+    },
+    "power_plan_name": "Ultimate Performance",
+    "native_probe_version": null,
+    "capability_flags": {
+      "native_cpuid_probe": false,
+      "telemetry.cpu_utilization": true,
+      "telemetry.per_core_utilization": true,
+      "telemetry.cpu_frequency": true,
+      "telemetry.process_cpu": true,
+      "telemetry.process_memory": true,
+      "telemetry.available_memory": true,
+      "telemetry.disk_free": true,
+      "telemetry.temperature": false
+    },
+    "sanitized_platform_fingerprint": "348c4b1169323bada4c7ae3046ffd4c72369a71b9f3f08142e1f8e92acff9a91"
+  },
+  "telemetry_samples": {
+    "CPU-001": [
+      {
+        "elapsed_seconds": 0.0,
+        "timestamp": "2026-09-19T20:24:30.992382Z",
+        "cpu_utilization_percent": 0.0,
+        "per_core_utilization_percent": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cpu_frequency_mhz": 3701.0,
+        "process_cpu_percent": 0.0,
+        "process_memory_bytes": 46858240,
+        "available_memory_bytes": 19603443712,
+        "disk_free_bytes": 344949551104,
+        "temperatures": [],
+        "collector_errors": []
+      }
+    ]
+  }
+}
