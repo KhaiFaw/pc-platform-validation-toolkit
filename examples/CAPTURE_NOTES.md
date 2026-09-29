@@ -1,5 +1,7 @@
 # Captured evidence
 
+The current native-enabled evidence is a [separate independent pair](independent-sessions/README.md) captured 30 September. The files described below are preserved historical examples. They predate the high-resolution timing fix and may include zero durations or epsilon-derived rates; recapture their baselines before current timing comparisons. They remain valid as dated functional/reporting evidence, not corrected-timer benchmarks.
+
 Captured 20 September 2026 in Asia/Kuala_Lumpur; embedded report timestamps are UTC (19 September). Source: published MVP `73c14ff`. No workload implementation changes were made for this capture.
 
 ## Measured quick plan

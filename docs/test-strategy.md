@@ -2,7 +2,7 @@
 
 ## Levels
 
-Unit tests cover strict models, plan loading, operator boundaries, fingerprints, capability handling, workload correctness, safety limits, statistics, and subprocess degradation. Integration tests exercise inspection commands, the complete quick plan, telemetry collection, cleanup, and an explicitly unmet requirement. Native decoder tests are present in C++ but remain uncompiled until the local C++ toolchain is available.
+Unit tests cover strict models, plan loading, operator boundaries, fingerprints, capability handling, workload correctness, safety limits, statistics, and subprocess degradation. Integration tests exercise inspection commands, the complete quick plan, telemetry collection, cleanup, and an explicitly unmet requirement. Native decoder CTest and actual Python schema integration were exercised locally with portable CMake/LLVM tools on 30 September 2026.
 
 Default tests use small bounded resources and no privileged hardware access. Hardware-dependent tests will use the `hardware` marker; longer tests use `extended`. CI must run synthetic and portable tests without assuming temperature sensors, a native probe, or a particular CPU feature.
 
@@ -19,6 +19,8 @@ ERROR takes precedence over FAIL, then WARN, PASS, and SKIP. PASS mixed with opt
 ## Measurement limits
 
 Performance measurements are local observations. Background load, scheduler activity, power policy, thermal state, storage caching, and unavailable sensors can affect results. Stability uses median duration and median absolute deviation; high variation is initially a warning. Baseline comparisons require matching platform fingerprints and plan hashes, use registered metric directions, and default to 10% warning and 20% failure thresholds. Zero baselines and incompatible identities do not produce a misleading percentage.
+
+Duration measurements use the high-resolution performance counter; safety deadlines retain their monotonic clock. Tests freeze the coarse deadline clock to verify that tiny workloads still have measurable durations, and freeze the performance clock to verify unavailable rates and WARN stability. Self-comparisons, different recorded power plans and non-finite thresholds have regression coverage. Recapture baselines made before the timer correction.
 
 ## Fault injection
 

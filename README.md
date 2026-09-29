@@ -9,15 +9,15 @@ A requirements-based command-line toolkit for collecting sanitized PC inventory,
 
 <img src="docs/images/architecture.png" width="640" alt="YAML plans and inventory feed bounded workloads, immutable reports and compatible baseline comparisons">
 
-[Measured report](examples/measured/report.md) · [Injected-failure report](examples/injected/report.md) · [Verification](docs/final-verification.md) · [Portfolio](https://github.com/KhaiFaw)
+[Independent native-enabled sessions](examples/independent-sessions/README.md) · [Injected-failure report](examples/injected/report.md) · [Verification](docs/final-verification.md) · [Portfolio](https://github.com/KhaiFaw)
 
 ## Project status
 
 Milestones 0–11 are implemented. The Python toolkit includes inventory, capability discovery, bounded CPU/memory/storage workloads, telemetry, explicit requirement evaluation, SQLite persistence, JSON/Markdown/HTML reports, conservative baseline comparisons, and a software-only fault-injection demonstration. GitHub Actions verifies portable Python behavior and the C++ decoder on Windows and Ubuntu.
 
-Version `0.1.0.dev0` is a functional MVP, not a stable release. On 20 September 2026, a fresh local dependency installation passed 66 tests, lint, formatting and strict typing. The local quick plan returned seven PASS, one WARN and one SKIP; unavailable capabilities remain visible in the result.
+Version `0.1.0.dev0` is a functional MVP, not a stable release. On 30 September 2026, local verification passed 80 tests, lint, formatting and strict typing. Two separately executed native-enabled quick plans each returned eight PASS and one WARN; temperature evidence remains unavailable. Their compatible timing comparison returned FAIL because a sub-millisecond measurement crossed a configured threshold; this is retained as evidence, not presented as a hardware diagnosis.
 
-The optional native CPUID probe source is complete but has not been compiled on the original development machine because CMake and a C++20 compiler are unavailable there. Missing native or sensor capabilities degrade to explicit WARN or SKIP evidence.
+The optional native CPUID probe now builds and runs locally: CMake 4.4.3, LLVM/MinGW Clang 23.1.2, Release build, decoder CTest and real Python schema integration passed. The toolchain was used from portable workspace folders without system installation. Missing native or sensor capabilities still degrade to explicit WARN or SKIP evidence.
 
 This is a functional validation and engineering-evidence tool. It is not an unrestricted stress test, overclocking utility, universal benchmark, monitoring replacement, or hardware-certification system.
 
@@ -29,9 +29,11 @@ Typer provides the CLI, Pydantic validates models, psutil provides portable obse
 
 ## Current evidence
 
+The [paired capture](examples/independent-sessions/README.md) preserves both real runs, their immutable baseline, comparison, power/background-load context, package-origin check, native-binary hash and source-file hashes. The runs have different UUIDs and matching platform/plan identities. They are short functional samples on a normal interactive desktop, not a controlled benchmark or thermal validation.
+
 ![Actual quick-plan HTML report: WARN, with seven passes, one warning and one skip](docs/images/measured-report.png)
 
-[Open the measured Markdown report](examples/measured/report.md), or download and open the [self-contained HTML](examples/measured/report.html) locally. The capture used Windows 11, Python 3.12, the checked-in quick plan and no native probe. It contains sanitized configuration details, not usernames or serial numbers.
+[Open the historical measured Markdown report](examples/measured/report.md), or download and open the [self-contained HTML](examples/measured/report.html) locally. This 20 September capture used Windows 11, Python 3.12, the checked-in quick plan and no native probe. It is preserved as historical functional/report evidence; recapture its baseline before interpreting timing against the corrected high-resolution timer.
 
 ![Actual injected-failure HTML report with synthetic evidence labelled](docs/images/injected-report.png)
 
@@ -74,6 +76,8 @@ To build the optional native probe after installing CMake and a supported C++20 
 platval doctor --native-probe cpp\cpuid_probe\build\Release\cpuid_probe.exe
 ```
 
+Single-configuration generators place the executable at `cpp\cpuid_probe\build\cpuid_probe.exe`. Portable LLVM/MinGW builds can explicitly select `-Generator 'MinGW Makefiles'`, `-CxxCompiler <compiler.exe>` and `-MakeProgram <mingw32-make.exe>` without changing system settings. Keep the compiler's runtime DLL directory on the current shell's PATH. See [the native-session procedure](docs/independent-sessions.md).
+
 ## Evidence and baseline workflow
 
 ```powershell
@@ -88,6 +92,8 @@ platval compare --baseline known-good --run <later-run-id>
 ```
 
 Baselines are tied to a sanitized platform fingerprint and plan hash and are never silently replaced. Numeric conclusions are withheld when either identity differs. Registered metrics use conservative 10% warning and 20% failure defaults, configurable per comparison. Functional correctness always takes priority over performance changes.
+
+Use [the paired-session capture script](scripts/capture_sessions.ps1) to preserve two independent quick-plan executions and their sanitized context. Self-comparisons are explicitly warned; changed recorded power plans are also flagged. Baselines captured before the high-resolution timing fix must be recaptured, even though the MVP version and plan hash are unchanged.
 
 ## Safe failure demonstration
 
@@ -134,7 +140,7 @@ Read [safety.md](docs/safety.md), [results-guide.md](docs/results-guide.md), and
 
 ## Roadmap
 
-The MVP acceptance path is implemented and has been exercised locally; the published commit also passed the Windows/Ubuntu CI matrix. Next: collect repeated, independently controlled baseline sessions, validate native-probe integration on a physical development machine, and establish a release policy. Timing variation alone cannot identify a hardware cause.
+The MVP acceptance path and local native integration have been exercised; earlier published source passed the Windows/Ubuntu CI matrix. Next: collect longer repeated sessions under controlled power/background conditions, add AMD extended-cache decoding, and establish a release policy. Two short interactive-desktop captures do not establish sustained stability. Timing variation alone cannot identify a hardware cause.
 
 ## Repository guide
 

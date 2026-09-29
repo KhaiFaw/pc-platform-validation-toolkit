@@ -1,5 +1,7 @@
 # Initial development environment
 
+For the current native-enabled local checkpoint, see [30 September verification](final-verification.md) and [paired sessions](../examples/independent-sessions/README.md). The initial and milestone records below are historical, not current prerequisite status. The follow-up used Python 3.12.14, portable CMake 4.4.3 and LLVM/MinGW Clang 23.1.2 without system installation; no monitoring software was added.
+
 Inspection date: 2026-08-22
 
 The target directory did not exist and was created as a new local Git repository under the configured workspace. The repository deliberately records no username or absolute private path.

@@ -1,0 +1,910 @@
+{
+  "run": {
+    "schema_version": 1,
+    "run_id": "b6434d3c-f080-4d3f-aa98-d2b5e4254274",
+    "plan_name": "quick-validation",
+    "plan_hash": "fb9a4cd47ff07fb05917c10bc102168578b0418be998f0c1fe20b02e7d33f8ac",
+    "tool_version": "0.1.0.dev0",
+    "platform_fingerprint": "ab272582381d2dc3c80106850dc88d177df1c5a5d37c79a2c819d9eb749adb61",
+    "started_at": "2026-09-29T21:54:47.678320Z",
+    "ended_at": "2026-09-29T21:54:47.794320Z",
+    "overall_status": "WARN",
+    "result_counts": {
+      "PASS": 8,
+      "WARN": 1
+    },
+    "test_results": [
+      {
+        "test_id": "INV-001",
+        "started_at": "2026-09-29T21:54:47.739320Z",
+        "ended_at": "2026-09-29T21:54:47.740321Z",
+        "duration_seconds": 0.0009317999938502908,
+        "status": "PASS",
+        "measured_values": {
+          "logical_cpu_count": {
+            "value": 12,
+            "unit": "processors",
+            "source": "inventory"
+          },
+          "physical_cpu_count": {
+            "value": 6,
+            "unit": "processors",
+            "source": "inventory"
+          },
+          "total_memory_bytes": {
+            "value": 33594245120,
+            "unit": "bytes",
+            "source": "inventory"
+          },
+          "storage_free_bytes": {
+            "value": 516125507584,
+            "unit": "bytes",
+            "source": "inventory"
+          },
+          "architecture": {
+            "value": "x86_64",
+            "unit": null,
+            "source": "inventory"
+          }
+        },
+        "requirements": [
+          {
+            "metric": "logical_cpu_count",
+            "operator": "greater_than",
+            "expected": 0,
+            "actual": 12,
+            "unit": null,
+            "passed": true,
+            "explanation": "actual value 12 satisfied greater_than 0"
+          },
+          {
+            "metric": "total_memory_bytes",
+            "operator": "greater_than",
+            "expected": 0,
+            "actual": 33594245120,
+            "unit": null,
+            "passed": true,
+            "explanation": "actual value 33594245120 satisfied greater_than 0"
+          }
+        ],
+        "failure_reason": null,
+        "evidence_references": [],
+        "exception_summary": null,
+        "telemetry_summary": {
+          "sample_count": 1,
+          "available_metrics": [
+            "cpu_utilization",
+            "per_core_utilization",
+            "cpu_frequency",
+            "process_cpu",
+            "process_memory",
+            "available_memory",
+            "disk_free"
+          ],
+          "unavailable_metrics": [
+            "temperature"
+          ],
+          "collector_error_count": 0
+        },
+        "injected": false
+      },
+      {
+        "test_id": "CPU-001",
+        "started_at": "2026-09-29T21:54:47.740321Z",
+        "ended_at": "2026-09-29T21:54:47.742320Z",
+        "duration_seconds": 0.0024100999580696225,
+        "status": "PASS",
+        "measured_values": {
+          "checksum_valid": {
+            "value": true,
+            "unit": null,
+            "source": "cpu_integer"
+          },
+          "operations": {
+            "value": 64,
+            "unit": "blocks",
+            "source": "cpu_integer"
+          },
+          "workers": {
+            "value": 1,
+            "unit": "workers",
+            "source": "cpu_integer"
+          },
+          "measured_duration": {
+            "value": 0.000923600047826767,
+            "unit": "seconds",
+            "source": "cpu_integer"
+          },
+          "operations_per_second": {
+            "value": 69294.06310728562,
+            "unit": "blocks/s",
+            "source": "cpu_integer"
+          }
+        },
+        "requirements": [
+          {
+            "metric": "checksum_valid",
+            "operator": "equals",
+            "expected": true,
+            "actual": true,
+            "unit": null,
+            "passed": true,
+            "explanation": "actual value True satisfied equals True"
+          }
+        ],
+        "failure_reason": null,
+        "evidence_references": [],
+        "exception_summary": null,
+        "telemetry_summary": {
+          "sample_count": 1,
+          "available_metrics": [
+            "cpu_utilization",
+            "per_core_utilization",
+            "cpu_frequency",
+            "process_cpu",
+            "process_memory",
+            "available_memory",
+            "disk_free"
+          ],
+          "unavailable_metrics": [
+            "temperature"
+          ],
+          "collector_error_count": 0
+        },
+        "injected": false
+      },
+      {
+        "test_id": "CPU-002",
+        "started_at": "2026-09-29T21:54:47.742320Z",
+        "ended_at": "2026-09-29T21:54:47.755320Z",
+        "duration_seconds": 0.012481300043873489,
+        "status": "PASS",
+        "measured_values": {
+          "actual": {
+            "value": 0.9999900000999989,
+            "unit": null,
+            "source": "cpu_floating_point"
+          },
+          "expected": {
+            "value": 0.999990000099999,
+            "unit": null,
+            "source": "cpu_floating_point"
+          },
+          "absolute_error": {
+            "value": 1.1102230246251565e-16,
+            "unit": null,
+            "source": "cpu_floating_point"
+          },
+          "tolerance": {
+            "value": 1e-12,
+            "unit": null,
+            "source": "cpu_floating_point"
+          },
+          "operations_per_second": {
+            "value": 8588630.32259921,
+            "unit": "terms/s",
+            "source": "cpu_floating_point"
+          }
+        },
+        "requirements": [
+          {
+            "metric": "absolute_error",
+            "operator": "less_than_or_equal",
+            "expected": 1e-12,
+            "actual": 1.1102230246251565e-16,
+            "unit": null,
+            "passed": true,
+            "explanation": "actual value 1.1102230246251565e-16 satisfied less_than_or_equal 1e-12"
+          }
+        ],
+        "failure_reason": null,
+        "evidence_references": [],
+        "exception_summary": null,
+        "telemetry_summary": {
+          "sample_count": 1,
+          "available_metrics": [
+            "cpu_utilization",
+            "per_core_utilization",
+            "cpu_frequency",
+            "process_cpu",
+            "process_memory",
+            "available_memory",
+            "disk_free"
+          ],
+          "unavailable_metrics": [
+            "temperature"
+          ],
+          "collector_error_count": 0
+        },
+        "injected": false
+      },
+      {
+        "test_id": "CPU-003",
+        "started_at": "2026-09-29T21:54:47.755320Z",
+        "ended_at": "2026-09-29T21:54:47.757320Z",
+        "duration_seconds": 0.002086100052110851,
+        "status": "PASS",
+        "measured_values": {
+          "checksum_valid": {
+            "value": true,
+            "unit": null,
+            "source": "cpu_integer"
+          },
+          "operations": {
+            "value": 64,
+            "unit": "blocks",
+            "source": "cpu_integer"
+          },
+          "workers": {
+            "value": 2,
+            "unit": "workers",
+            "source": "cpu_integer"
+          },
+          "measured_duration": {
+            "value": 0.0006997999735176563,
+            "unit": "seconds",
+            "source": "cpu_integer"
+          },
+          "operations_per_second": {
+            "value": 91454.70480413678,
+            "unit": "blocks/s",
+            "source": "cpu_integer"
+          }
+        },
+        "requirements": [
+          {
+            "metric": "checksum_valid",
+            "operator": "equals",
+            "expected": true,
+            "actual": true,
+            "unit": null,
+            "passed": true,
+            "explanation": "actual value True satisfied equals True"
+          }
+        ],
+        "failure_reason": null,
+        "evidence_references": [],
+        "exception_summary": null,
+        "telemetry_summary": {
+          "sample_count": 1,
+          "available_metrics": [
+            "cpu_utilization",
+            "per_core_utilization",
+            "cpu_frequency",
+            "process_cpu",
+            "process_memory",
+            "available_memory",
+            "disk_free"
+          ],
+          "unavailable_metrics": [
+            "temperature"
+          ],
+          "collector_error_count": 0
+        },
+        "injected": false
+      },
+      {
+        "test_id": "MEM-001",
+        "started_at": "2026-09-29T21:54:47.757320Z",
+        "ended_at": "2026-09-29T21:54:47.774320Z",
+        "duration_seconds": 0.01675519999116659,
+        "status": "PASS",
+        "measured_values": {
+          "checksum_valid": {
+            "value": true,
+            "unit": null,
+            "source": "memory_pattern"
+          },
+          "allocation": {
+            "value": 8388608,
+            "unit": "bytes",
+            "source": "memory_pattern"
+          },
+          "processed_bytes": {
+            "value": 25165824,
+            "unit": "bytes",
+            "source": "memory_pattern"
+          },
+          "throughput": {
+            "value": 1603940341.1749759,
+            "unit": "bytes/s",
+            "source": "memory_pattern"
+          }
+        },
+        "requirements": [
+          {
+            "metric": "checksum_valid",
+            "operator": "equals",
+            "expected": true,
+            "actual": true,
+            "unit": null,
+            "passed": true,
+            "explanation": "actual value True satisfied equals True"
+          }
+        ],
+        "failure_reason": null,
+        "evidence_references": [],
+        "exception_summary": null,
+        "telemetry_summary": {
+          "sample_count": 1,
+          "available_metrics": [
+            "cpu_utilization",
+            "per_core_utilization",
+            "cpu_frequency",
+            "process_cpu",
+            "process_memory",
+            "available_memory",
+            "disk_free"
+          ],
+          "unavailable_metrics": [
+            "temperature"
+          ],
+          "collector_error_count": 0
+        },
+        "injected": false
+      },
+      {
+        "test_id": "STO-001",
+        "started_at": "2026-09-29T21:54:47.774320Z",
+        "ended_at": "2026-09-29T21:54:47.789320Z",
+        "duration_seconds": 0.015603899955749512,
+        "status": "PASS",
+        "measured_values": {
+          "checksum_valid": {
+            "value": true,
+            "unit": null,
+            "source": "temporary_storage_round_trip"
+          },
+          "file_size": {
+            "value": 4194304,
+            "unit": "bytes",
+            "source": "temporary_storage_round_trip"
+          },
+          "write_throughput": {
+            "value": 788892362.2786497,
+            "unit": "bytes/s",
+            "source": "temporary_storage_round_trip"
+          },
+          "read_throughput": {
+            "value": 559270365.1329118,
+            "unit": "bytes/s",
+            "source": "temporary_storage_round_trip"
+          }
+        },
+        "requirements": [
+          {
+            "metric": "checksum_valid",
+            "operator": "equals",
+            "expected": true,
+            "actual": true,
+            "unit": null,
+            "passed": true,
+            "explanation": "actual value True satisfied equals True"
+          }
+        ],
+        "failure_reason": null,
+        "evidence_references": [],
+        "exception_summary": null,
+        "telemetry_summary": {
+          "sample_count": 1,
+          "available_metrics": [
+            "cpu_utilization",
+            "per_core_utilization",
+            "cpu_frequency",
+            "process_cpu",
+            "process_memory",
+            "available_memory",
+            "disk_free"
+          ],
+          "unavailable_metrics": [
+            "temperature"
+          ],
+          "collector_error_count": 0
+        },
+        "injected": false
+      },
+      {
+        "test_id": "TEL-001",
+        "started_at": "2026-09-29T21:54:47.790323Z",
+        "ended_at": "2026-09-29T21:54:47.790323Z",
+        "duration_seconds": 0.0009574999567121267,
+        "status": "WARN",
+        "measured_values": {
+          "cpu_utilization_available": {
+            "value": true,
+            "unit": null,
+            "source": "psutil"
+          },
+          "per_core_utilization_available": {
+            "value": true,
+            "unit": null,
+            "source": "psutil"
+          },
+          "cpu_frequency_available": {
+            "value": true,
+            "unit": null,
+            "source": "psutil"
+          },
+          "process_cpu_available": {
+            "value": true,
+            "unit": null,
+            "source": "psutil"
+          },
+          "process_memory_available": {
+            "value": true,
+            "unit": null,
+            "source": "psutil"
+          },
+          "available_memory_available": {
+            "value": true,
+            "unit": null,
+            "source": "psutil"
+          },
+          "disk_free_available": {
+            "value": true,
+            "unit": null,
+            "source": "psutil"
+          },
+          "temperature_available": {
+            "value": false,
+            "unit": null,
+            "source": "psutil"
+          }
+        },
+        "requirements": [],
+        "failure_reason": "temperature telemetry is unavailable",
+        "evidence_references": [],
+        "exception_summary": null,
+        "telemetry_summary": {
+          "sample_count": 1,
+          "available_metrics": [
+            "cpu_utilization",
+            "per_core_utilization",
+            "cpu_frequency",
+            "process_cpu",
+            "process_memory",
+            "available_memory",
+            "disk_free"
+          ],
+          "unavailable_metrics": [
+            "temperature"
+          ],
+          "collector_error_count": 0
+        },
+        "injected": false
+      },
+      {
+        "test_id": "STB-001",
+        "started_at": "2026-09-29T21:54:47.791321Z",
+        "ended_at": "2026-09-29T21:54:47.793320Z",
+        "duration_seconds": 0.0022864999482408166,
+        "status": "PASS",
+        "measured_values": {
+          "repetitions": {
+            "value": 3,
+            "unit": "runs",
+            "source": "scheduler_stability"
+          },
+          "median_duration": {
+            "value": 0.00037459994200617075,
+            "unit": "seconds",
+            "source": "scheduler_stability"
+          },
+          "median_absolute_deviation": {
+            "value": 5.799927748739719e-6,
+            "unit": "seconds",
+            "source": "scheduler_stability"
+          },
+          "robust_variability": {
+            "value": 1.5482991582108088,
+            "unit": "%",
+            "source": "scheduler_stability"
+          }
+        },
+        "requirements": [],
+        "failure_reason": null,
+        "evidence_references": [],
+        "exception_summary": null,
+        "telemetry_summary": {
+          "sample_count": 1,
+          "available_metrics": [
+            "cpu_utilization",
+            "per_core_utilization",
+            "cpu_frequency",
+            "process_cpu",
+            "process_memory",
+            "available_memory",
+            "disk_free"
+          ],
+          "unavailable_metrics": [
+            "temperature"
+          ],
+          "collector_error_count": 0
+        },
+        "injected": false
+      },
+      {
+        "test_id": "CFG-001",
+        "started_at": "2026-09-29T21:54:47.793320Z",
+        "ended_at": "2026-09-29T21:54:47.794320Z",
+        "duration_seconds": 0.0006963000632822514,
+        "status": "PASS",
+        "measured_values": {
+          "cpu.sse2": {
+            "value": true,
+            "unit": null,
+            "source": "native_cpuid_probe"
+          },
+          "cpu.sse41": {
+            "value": true,
+            "unit": null,
+            "source": "native_cpuid_probe"
+          },
+          "cpu.sse42": {
+            "value": true,
+            "unit": null,
+            "source": "native_cpuid_probe"
+          },
+          "cpu.avx_hardware": {
+            "value": true,
+            "unit": null,
+            "source": "native_cpuid_probe"
+          },
+          "cpu.avx2_hardware": {
+            "value": true,
+            "unit": null,
+            "source": "native_cpuid_probe"
+          },
+          "cpu.avx_os_enabled": {
+            "value": true,
+            "unit": null,
+            "source": "native_cpuid_probe"
+          },
+          "cpu.aes": {
+            "value": true,
+            "unit": null,
+            "source": "native_cpuid_probe"
+          },
+          "cpu.virtualization_hardware": {
+            "value": false,
+            "unit": null,
+            "source": "native_cpuid_probe"
+          }
+        },
+        "requirements": [
+          {
+            "metric": "cpu.sse2",
+            "operator": "equals",
+            "expected": true,
+            "actual": true,
+            "unit": null,
+            "passed": true,
+            "explanation": "actual value True satisfied equals True"
+          }
+        ],
+        "failure_reason": null,
+        "evidence_references": [],
+        "exception_summary": null,
+        "telemetry_summary": {
+          "sample_count": 1,
+          "available_metrics": [
+            "cpu_utilization",
+            "per_core_utilization",
+            "cpu_frequency",
+            "process_cpu",
+            "process_memory",
+            "available_memory",
+            "disk_free"
+          ],
+          "unavailable_metrics": [
+            "temperature"
+          ],
+          "collector_error_count": 0
+        },
+        "injected": false
+      }
+    ],
+    "artifact_manifest": [],
+    "warnings": [
+      "A trustworthy temperature source is unavailable; runtime limits remain conservative."
+    ],
+    "limitations": [
+      "A trustworthy temperature source is unavailable; runtime limits remain conservative."
+    ]
+  },
+  "platform": {
+    "tool_version": "0.1.0.dev0",
+    "operating_system": "Windows",
+    "operating_system_version": "11",
+    "operating_system_build": "10.0.26200",
+    "python_version": "3.12.14",
+    "architecture": "x86_64",
+    "cpu_vendor": "AuthenticAMD",
+    "cpu_brand": "AMD Ryzen 5 7500F 6-Core Processor",
+    "logical_processor_count": 12,
+    "physical_processor_count": 6,
+    "caches": [],
+    "total_memory_bytes": 33594245120,
+    "storage_volume": {
+      "filesystem": "NTFS",
+      "capacity_bytes": 1023094550528,
+      "free_bytes": 516125507584
+    },
+    "power_plan_name": "Ultimate Performance",
+    "native_probe_version": "0.1.0",
+    "capability_flags": {
+      "native_cpuid_probe": true,
+      "telemetry.cpu_utilization": true,
+      "telemetry.per_core_utilization": true,
+      "telemetry.cpu_frequency": true,
+      "telemetry.process_cpu": true,
+      "telemetry.process_memory": true,
+      "telemetry.available_memory": true,
+      "telemetry.disk_free": true,
+      "telemetry.temperature": false,
+      "cpu.sse2": true,
+      "cpu.sse41": true,
+      "cpu.sse42": true,
+      "cpu.avx_hardware": true,
+      "cpu.avx2_hardware": true,
+      "cpu.avx_os_enabled": true,
+      "cpu.aes": true,
+      "cpu.virtualization_hardware": false
+    },
+    "sanitized_platform_fingerprint": "ab272582381d2dc3c80106850dc88d177df1c5a5d37c79a2c819d9eb749adb61"
+  },
+  "telemetry_samples": {
+    "INV-001": [
+      {
+        "elapsed_seconds": 0.0,
+        "timestamp": "2026-09-29T21:54:47.740321Z",
+        "cpu_utilization_percent": 0.0,
+        "per_core_utilization_percent": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cpu_frequency_mhz": 3701.0,
+        "process_cpu_percent": 0.0,
+        "process_memory_bytes": 47345664,
+        "available_memory_bytes": 18006712320,
+        "disk_free_bytes": 516125507584,
+        "temperatures": [],
+        "collector_errors": []
+      }
+    ],
+    "CPU-001": [
+      {
+        "elapsed_seconds": 0.0,
+        "timestamp": "2026-09-29T21:54:47.740321Z",
+        "cpu_utilization_percent": 0.0,
+        "per_core_utilization_percent": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cpu_frequency_mhz": 3701.0,
+        "process_cpu_percent": 0.0,
+        "process_memory_bytes": 47386624,
+        "available_memory_bytes": 18006478848,
+        "disk_free_bytes": 516125507584,
+        "temperatures": [],
+        "collector_errors": []
+      }
+    ],
+    "CPU-002": [
+      {
+        "elapsed_seconds": 0.015000000013969839,
+        "timestamp": "2026-09-29T21:54:47.755320Z",
+        "cpu_utilization_percent": 0.0,
+        "per_core_utilization_percent": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cpu_frequency_mhz": 3701.0,
+        "process_cpu_percent": 104.2,
+        "process_memory_bytes": 47415296,
+        "available_memory_bytes": 18006319104,
+        "disk_free_bytes": 516125507584,
+        "temperatures": [],
+        "collector_errors": []
+      }
+    ],
+    "CPU-003": [
+      {
+        "elapsed_seconds": 0.0,
+        "timestamp": "2026-09-29T21:54:47.756320Z",
+        "cpu_utilization_percent": 0.0,
+        "per_core_utilization_percent": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cpu_frequency_mhz": 3701.0,
+        "process_cpu_percent": 0.0,
+        "process_memory_bytes": 47423488,
+        "available_memory_bytes": 18006118400,
+        "disk_free_bytes": 516125507584,
+        "temperatures": [],
+        "collector_errors": []
+      }
+    ],
+    "MEM-001": [
+      {
+        "elapsed_seconds": 0.0,
+        "timestamp": "2026-09-29T21:54:47.762320Z",
+        "cpu_utilization_percent": 0.0,
+        "per_core_utilization_percent": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cpu_frequency_mhz": 3701.0,
+        "process_cpu_percent": 0.0,
+        "process_memory_bytes": 47476736,
+        "available_memory_bytes": 18006122496,
+        "disk_free_bytes": 516125507584,
+        "temperatures": [],
+        "collector_errors": []
+      }
+    ],
+    "STO-001": [
+      {
+        "elapsed_seconds": 0.0,
+        "timestamp": "2026-09-29T21:54:47.775323Z",
+        "cpu_utilization_percent": 0.0,
+        "per_core_utilization_percent": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cpu_frequency_mhz": 3701.0,
+        "process_cpu_percent": 0.0,
+        "process_memory_bytes": 47484928,
+        "available_memory_bytes": 17989525504,
+        "disk_free_bytes": 516125507584,
+        "temperatures": [],
+        "collector_errors": []
+      }
+    ],
+    "TEL-001": [
+      {
+        "elapsed_seconds": 0.0,
+        "timestamp": "2026-09-29T21:54:47.790323Z",
+        "cpu_utilization_percent": 0.0,
+        "per_core_utilization_percent": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cpu_frequency_mhz": 3701.0,
+        "process_cpu_percent": 0.0,
+        "process_memory_bytes": 47538176,
+        "available_memory_bytes": 17989664768,
+        "disk_free_bytes": 516125507584,
+        "temperatures": [],
+        "collector_errors": []
+      }
+    ],
+    "STB-001": [
+      {
+        "elapsed_seconds": 0.0,
+        "timestamp": "2026-09-29T21:54:47.791321Z",
+        "cpu_utilization_percent": 0.0,
+        "per_core_utilization_percent": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cpu_frequency_mhz": 3701.0,
+        "process_cpu_percent": 0.0,
+        "process_memory_bytes": 47550464,
+        "available_memory_bytes": 17989603328,
+        "disk_free_bytes": 516125507584,
+        "temperatures": [],
+        "collector_errors": []
+      }
+    ],
+    "CFG-001": [
+      {
+        "elapsed_seconds": 0.0,
+        "timestamp": "2026-09-29T21:54:47.793320Z",
+        "cpu_utilization_percent": 0.0,
+        "per_core_utilization_percent": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "cpu_frequency_mhz": 3701.0,
+        "process_cpu_percent": 0.0,
+        "process_memory_bytes": 47554560,
+        "available_memory_bytes": 17989603328,
+        "disk_free_bytes": 516125507584,
+        "temperatures": [],
+        "collector_errors": []
+      }
+    ]
+  }
+}

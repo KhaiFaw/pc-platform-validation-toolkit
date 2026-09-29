@@ -18,6 +18,8 @@ The overall status uses the precedence `ERROR`, `FAIL`, `WARN`, `PASS`, `SKIP`. 
 
 Short workloads are useful for functional checks but are sensitive to timer resolution, scheduling, background activity, cache state, power policy, and virtualization. Very small measured durations can produce extreme throughput values and should not be treated as benchmarks. Compare repeated, similarly configured runs and prefer robust summaries such as medians and median absolute deviation.
 
+Duration measurement now uses `time.perf_counter()` rather than a potentially coarse Windows monotonic deadline clock. A zero/non-finite duration yields an unavailable rate; unmeasurable stability is WARN. Historical baselines captured before this fix may contain epsilon-derived rates: recapture them rather than interpreting a comparison against the corrected implementation. Version/plan matching alone does not detect this legacy timer difference.
+
 ## Telemetry gaps
 
 Sampling is independent and bounded. A very short test may contain only one sample, so its chart is a point rather than a trend. Sensor support varies by operating system and hardware; unavailable temperature or frequency data is reported explicitly. Missing data does not convert a functional PASS into proof that thermal or power behavior was healthy.
@@ -31,3 +33,5 @@ These results are local software observations, not vendor endorsement or hardwar
 Baseline comparison is limited to registered numeric metrics whose direction is known. The default warning threshold is 10% adverse change and the failure threshold is 20%; changes within the warning band are classified unchanged, while similarly sized favorable changes are labelled improved. Both values are configurable per invocation and are recorded in the comparison evidence.
 
 Numeric conclusions are withheld when platform fingerprints or plan hashes differ. A zero baseline cannot yield a meaningful percentage. Functional FAIL and ERROR take priority. Even a compatible threshold crossing is correlation only: repeat the plan and investigate background load, power policy, caching, scheduler activity, temperature evidence, and workload variability before drawing a conclusion.
+
+Comparing a baseline to its own source UUID explicitly reports a self-comparison warning, not independent evidence. Different recorded power-plan names also generate a warning even though the stable platform fingerprint intentionally excludes power policy. See the [real independent sessions](../examples/independent-sessions/README.md), including their retained timing FAIL and context.

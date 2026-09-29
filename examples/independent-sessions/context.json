@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "captured_at_utc": "2026-09-29T21:54:49.7909826Z",
+  "separation_seconds": 15,
+  "source_commit": "b9e74768613ad0925f76a142df59d40802a5c606",
+  "tracked_source_modified": false,
+  "python_provenance": {
+    "module_resolves_to_checkout": true,
+    "python_version": "3.12.14"
+  },
+  "native_binary_sha256": "dc45e960a21194bec9da228404db7043ddd13d4484baceddfcafa5246d6a122a",
+  "sessions": [
+    {
+      "label": "baseline-session",
+      "run_id": "fc5a7b5e-2b68-4c46-9dec-23e104abf602",
+      "started_at_utc": "2026-09-29T21:54:28.858528Z",
+      "overall_status": "WARN",
+      "plan_hash": "fb9a4cd47ff07fb05917c10bc102168578b0418be998f0c1fe20b02e7d33f8ac",
+      "platform_fingerprint": "ab272582381d2dc3c80106850dc88d177df1c5a5d37c79a2c819d9eb749adb61",
+      "power_plan_name": "Ultimate Performance",
+      "native_probe_version": "0.1.0",
+      "background_context": "Normal interactive Windows desktop with Codex and other applications left running; parallel repository inspection may contribute background load. No background applications were closed and no load or power-policy change was deliberately injected.",
+      "pre_run_context": {
+        "sampled_at_utc": "2026-09-29T21:54:26.4819050Z",
+        "cpu_sampling_seconds": 2,
+        "system_cpu_percent_before_run": 10.2,
+        "available_memory_bytes_before_run": 17979932672,
+        "process_count_before_run": 375,
+        "power_plugged": null,
+        "battery_percent": null,
+        "battery_context": "unavailable",
+        "measurement_clock": {
+          "implementation": "QueryPerformanceCounter()",
+          "monotonic": true,
+          "adjustable": false,
+          "resolution": 1E-07
+        },
+        "deadline_clock": {
+          "implementation": "GetTickCount64()",
+          "monotonic": true,
+          "adjustable": false,
+          "resolution": 0.015625
+        }
+      }
+    },
+    {
+      "label": "repeat-session",
+      "run_id": "b6434d3c-f080-4d3f-aa98-d2b5e4254274",
+      "started_at_utc": "2026-09-29T21:54:47.67832Z",
+      "overall_status": "WARN",
+      "plan_hash": "fb9a4cd47ff07fb05917c10bc102168578b0418be998f0c1fe20b02e7d33f8ac",
+      "platform_fingerprint": "ab272582381d2dc3c80106850dc88d177df1c5a5d37c79a2c819d9eb749adb61",
+      "power_plan_name": "Ultimate Performance",
+      "native_probe_version": "0.1.0",
+      "background_context": "Normal interactive Windows desktop with Codex and other applications left running; parallel repository inspection may contribute background load. No background applications were closed and no load or power-policy change was deliberately injected.",
+      "pre_run_context": {
+        "sampled_at_utc": "2026-09-29T21:54:45.3051900Z",
+        "cpu_sampling_seconds": 2,
+        "system_cpu_percent_before_run": 6.3,
+        "available_memory_bytes_before_run": 18059665408,
+        "process_count_before_run": 374,
+        "power_plugged": null,
+        "battery_percent": null,
+        "battery_context": "unavailable",
+        "measurement_clock": {
+          "implementation": "QueryPerformanceCounter()",
+          "monotonic": true,
+          "adjustable": false,
+          "resolution": 1E-07
+        },
+        "deadline_clock": {
+          "implementation": "GetTickCount64()",
+          "monotonic": true,
+          "adjustable": false,
+          "resolution": 0.015625
+        }
+      }
+    }
+  ],
+  "comparison_status": "FAIL",
+  "comparison_exit_code": 1,
+  "interpretation": "Two separately executed quick plans on the same host, not independent day-to-day sessions or hardware certification. Background load, cache state and temperature were not controlled. A short-run threshold crossing is retained as evidence, not a hardware-defect claim."
+}

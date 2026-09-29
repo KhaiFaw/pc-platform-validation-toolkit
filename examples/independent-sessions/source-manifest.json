@@ -1,0 +1,251 @@
+{
+  "source_commit": "b9e74768613ad0925f76a142df59d40802a5c606",
+  "tracked_source_modified": false,
+  "python_provenance": {
+    "module_resolves_to_checkout": true,
+    "python_version": "3.12.14"
+  },
+  "native_binary_sha256": "dc45e960a21194bec9da228404db7043ddd13d4484baceddfcafa5246d6a122a",
+  "files": [
+    {
+      "path": "configs/failure-demo.yaml",
+      "sha256": "ca47e55797e36ee6d836d85ce09b9f170cf754ffae08a315dcc541665cb78d02"
+    },
+    {
+      "path": "configs/quick.yaml",
+      "sha256": "777f5d7d7658f12f04da80ce750a5cf49801c3125731feb2af3438e1d6c71cda"
+    },
+    {
+      "path": "configs/standard.yaml",
+      "sha256": "9c63be9d5e2d189ef2bb7a2f30a78c8e83ce91169e1cfe06d0413f03141a068c"
+    },
+    {
+      "path": "cpp/cpuid_probe/CMakeLists.txt",
+      "sha256": "d1bc473b01d87e4fbf253562dc7720c6d13ed0c2046447ebf115ff1363590674"
+    },
+    {
+      "path": "cpp/cpuid_probe/include/platval_cpuid/cpuid_access.hpp",
+      "sha256": "541181950b039a6d3e8dc3f76778380f6d345f2d948f99c963697b8bb8af741b"
+    },
+    {
+      "path": "cpp/cpuid_probe/include/platval_cpuid/decoder.hpp",
+      "sha256": "46069b8bd6cc468f3038db74e90c9c264c3b4cd97c7d2a168427210fed863ce2"
+    },
+    {
+      "path": "cpp/cpuid_probe/include/platval_cpuid/json.hpp",
+      "sha256": "63040cd5457544d6c7492dd44e4ad07adeb16be28fda3e9271ed5005b5c7ac04"
+    },
+    {
+      "path": "cpp/cpuid_probe/include/platval_cpuid/version.hpp",
+      "sha256": "9d111eb0eb1c958cb4db19441f71ad8ff1e17bda00fde58ddf07ae9106068f99"
+    },
+    {
+      "path": "cpp/cpuid_probe/src/cpuid_access.cpp",
+      "sha256": "1a29d9a25d7b85aa29d818864bbb5c580f921e34a83b6371b2e99ca619bad669"
+    },
+    {
+      "path": "cpp/cpuid_probe/src/decoder.cpp",
+      "sha256": "109aa55ded5a719133c4534c8bbf2ed18eac3637c71d83823ebeb7def017cec3"
+    },
+    {
+      "path": "cpp/cpuid_probe/src/json.cpp",
+      "sha256": "10d257b35db5c904ad1ce4d25cd6f2c1135716cd2f7edda610e22e8cea805559"
+    },
+    {
+      "path": "cpp/cpuid_probe/src/main.cpp",
+      "sha256": "0a28259a8de4e5f4a75bda7373a606275950a550440decd39d0346a424e8d300"
+    },
+    {
+      "path": "cpp/cpuid_probe/tests/decoder_tests.cpp",
+      "sha256": "b4f1ba211257ba44dd3116f96dbfffac1e40d5ef04a670c745fee3af14346815"
+    },
+    {
+      "path": "scripts/build_native.ps1",
+      "sha256": "781bc4b1877a732c79121a4200162097cd1720e1bd2b96d09f610ce146ecb186"
+    },
+    {
+      "path": "scripts/capture_sessions.ps1",
+      "sha256": "0d8988bac091c81c7d517a20d030e46d2d0224e16df1a41881d42a17aa99c484"
+    },
+    {
+      "path": "scripts/verify.ps1",
+      "sha256": "b348e4ae3eb69393c369d213b80196bff3d9e340c229ed40c0dd7d44774116da"
+    },
+    {
+      "path": "src/platval/__init__.py",
+      "sha256": "4e9135f1c2069bde57506c7fc07b02c0fa6871186eb70206e9e773e6b42716fb"
+    },
+    {
+      "path": "src/platval/baselines/__init__.py",
+      "sha256": "8b1910954ef3bcf39ece790bf5880fb73586e499565701ec1909d6c31462d726"
+    },
+    {
+      "path": "src/platval/baselines/models.py",
+      "sha256": "9dd8bfcb149a51080b8000bb131902db38891da7b8ff3262f70997859a3a4af1"
+    },
+    {
+      "path": "src/platval/baselines/service.py",
+      "sha256": "29a02cc403560a05e05b760fccbd2fe657d27bc64e60b3debbbc8fae9ac34c47"
+    },
+    {
+      "path": "src/platval/cli.py",
+      "sha256": "fb265bf583d3624571fe456d66b18ae9331f7741c36223926c665ab0defd2032"
+    },
+    {
+      "path": "src/platval/collectors/__init__.py",
+      "sha256": "fbf965e3c3841923b49767d339ace8010900dd494f682c34e39ed0cba9cc1f86"
+    },
+    {
+      "path": "src/platval/collectors/capabilities.py",
+      "sha256": "f382719f078dc54a283a9c63855e41f1e560e6b9d733739c8dac1659617ec445"
+    },
+    {
+      "path": "src/platval/collectors/sampler.py",
+      "sha256": "ba99260a887831dead3bf6fad2751167c39969880faaf131a8e479cc0e2fce01"
+    },
+    {
+      "path": "src/platval/constants.py",
+      "sha256": "a708513aba31adc733683153c76bafab275a83b2ccd6923e3b8a6a4cbb1d3771"
+    },
+    {
+      "path": "src/platval/demo.py",
+      "sha256": "5257303e9778506bb1594b303a5a93bccf22047fb12213ad00c1a4527182c135"
+    },
+    {
+      "path": "src/platval/doctor.py",
+      "sha256": "3bfda809cd0820ce766bbb6e469593d04e2671ae3a9b8fbd818c6912f68f285d"
+    },
+    {
+      "path": "src/platval/evaluation/__init__.py",
+      "sha256": "c0ad780b24e6cd353db2720dd4a05e9d3ca967985c9d6367802ca140bacf113f"
+    },
+    {
+      "path": "src/platval/evaluation/evaluator.py",
+      "sha256": "6d38470d7be68a8d1cf17ca5e9516ae1deceef4d12c431017a596289fc677807"
+    },
+    {
+      "path": "src/platval/inventory/__init__.py",
+      "sha256": "6fdb66676d8eb7326027ac8e7673ff724a59fce35e8eea9819f069923d73fb19"
+    },
+    {
+      "path": "src/platval/inventory/collector.py",
+      "sha256": "b2537d0dec239a1b313d51c0eda90d66d76612b0dcf373c5e9df5a6ba027fa04"
+    },
+    {
+      "path": "src/platval/inventory/native_probe.py",
+      "sha256": "8757e07947aae63a0d32be1eb7bb28b53b01d8ea0fbe8e74fe5fb64b59d2f784"
+    },
+    {
+      "path": "src/platval/models/__init__.py",
+      "sha256": "753a3975346a6433ba13aa015443a8d689cdb5d834bb33ffcd0ac3ad11792394"
+    },
+    {
+      "path": "src/platval/models/common.py",
+      "sha256": "8da8bdf236c9fc2b800a1cd6056190bfe5ffcd83fc66b2f9de45c91217179d7b"
+    },
+    {
+      "path": "src/platval/models/plan.py",
+      "sha256": "776e00080908b7e6c39f460e1e45f01dcdc9f35bbe77ede390806c500d639f1a"
+    },
+    {
+      "path": "src/platval/models/platform.py",
+      "sha256": "9487801d4937d978eb86f373991c5e2891d30d705aee82510b2d59cd15f12a86"
+    },
+    {
+      "path": "src/platval/models/results.py",
+      "sha256": "d17863a071bccb67b660b1d0b66095ce9688217d8d75b59b3459f41db07e5db1"
+    },
+    {
+      "path": "src/platval/models/status.py",
+      "sha256": "7dceb71c4deaa0994b851cdde1655d82feb907a8616f696275fb4b26c70e4382"
+    },
+    {
+      "path": "src/platval/models/telemetry.py",
+      "sha256": "a9c8caf9a29a0b48b6c1ee4c6e2502ec9f06b8e1566c93ab565f2976bfec3fea"
+    },
+    {
+      "path": "src/platval/persistence/__init__.py",
+      "sha256": "cee40c10a407a13510c76226c00da1b1bdee413d3986b4838d76bb7364a0bb99"
+    },
+    {
+      "path": "src/platval/persistence/artifacts.py",
+      "sha256": "1c5243f7b3f8a6cce226b0d44db0f13cf56dce62b719754659a7feb22a5fef81"
+    },
+    {
+      "path": "src/platval/persistence/repository.py",
+      "sha256": "71c30395f5af819a23b8363c505960ccf522d18f3308c8a03b18e9aceade8a9c"
+    },
+    {
+      "path": "src/platval/persistence/schema.py",
+      "sha256": "49c9dc3eb98c771c0858861bf9a97223f330c934d38471a31f187df6abe7a1f8"
+    },
+    {
+      "path": "src/platval/reporting/__init__.py",
+      "sha256": "0b17b614de83af684b17c6d6222aca8fa056eef1ce90c91279080ea7a74b8079"
+    },
+    {
+      "path": "src/platval/reporting/renderers.py",
+      "sha256": "e1bc833b8cacb5907c18702a147cb5dadbcdb57ce483e8de14638b5d602e0119"
+    },
+    {
+      "path": "src/platval/reporting/service.py",
+      "sha256": "43c8480cd1c4546d6a10332b7fc3586ab02c973e907b25dea0753af29cf2134c"
+    },
+    {
+      "path": "src/platval/reporting/templates/report.html.j2",
+      "sha256": "ee542a6738087b0b26377894e40ec7b8d0e8ea3bc90f1247d9b47dd1e914ae98"
+    },
+    {
+      "path": "src/platval/reporting/view.py",
+      "sha256": "84e7642e08c3a854b2ceca015341dc5453776d26f8f7cc3f569c41218b648a70"
+    },
+    {
+      "path": "src/platval/runner/__init__.py",
+      "sha256": "42dd37efe9665530a808e8d928a6e2a72176aaeb5bf898b42936a45f18466aa6"
+    },
+    {
+      "path": "src/platval/runner/engine.py",
+      "sha256": "33c9884a391d3790486ed6739694f343db4efb8fe7c61bed964ae02d6d41fb73"
+    },
+    {
+      "path": "src/platval/runner/plan_loader.py",
+      "sha256": "154794b654a8b44d99514492fdab8cf83d07edb930dd6c637cc190a755993aef"
+    },
+    {
+      "path": "src/platval/workloads/__init__.py",
+      "sha256": "8356e0cf4d13f4fd375122598de56a48de568b2b069f10c019635f40f89e3425"
+    },
+    {
+      "path": "src/platval/workloads/control.py",
+      "sha256": "c00ab96f7888479d71e01c3dddbe8d6d2730972bdf4cad1bc2a6b2dce52848bd"
+    },
+    {
+      "path": "src/platval/workloads/cpu.py",
+      "sha256": "0c16c03894407f717736df243d7052b923b25f4aa3e2681324953f4b214b437d"
+    },
+    {
+      "path": "src/platval/workloads/errors.py",
+      "sha256": "41f0c6ec2abafc34b59060430e84b2cbcd11e819e803cec73377f2da013729f3"
+    },
+    {
+      "path": "src/platval/workloads/memory.py",
+      "sha256": "21f57c13785ac8345ff43ce7bcab1af62a5cff189fcae87a638698f0368b7736"
+    },
+    {
+      "path": "src/platval/workloads/models.py",
+      "sha256": "08aa6905aaf9a2fb7f5a947b29168f3d9fb0e189b4c670def3c242a85ded6b6e"
+    },
+    {
+      "path": "src/platval/workloads/safety.py",
+      "sha256": "0ce97fbeea65516a2d8b771845d07940373bd19f47cf7f1359a93ff1b236661e"
+    },
+    {
+      "path": "src/platval/workloads/storage.py",
+      "sha256": "92984236b8168dcc4a501e974cd122d5ddea353a4ffe411cd2bcf7efe5202350"
+    },
+    {
+      "path": "src/platval/workloads/timing.py",
+      "sha256": "72280f759b87a3b6cc0255e03f543251c43a820568776ff9961e4c794e61cb1b"
+    }
+  ]
+}

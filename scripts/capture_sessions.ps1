@@ -25,6 +25,7 @@ if ($BackgroundContext.Length -gt 500) {
 $nativeArguments = @()
 $nativeBinarySha256 = $null
 if ($NativeProbePath) {
+    $NativeProbePath = [System.IO.Path]::GetFullPath($NativeProbePath)
     if (-not (Test-Path -LiteralPath $NativeProbePath -PathType Leaf)) {
         throw 'The explicitly requested native probe does not exist.'
     }
