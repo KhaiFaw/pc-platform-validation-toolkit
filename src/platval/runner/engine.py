@@ -252,7 +252,10 @@ def _execute_case(
         )
         variability = case.measurements["robust_variability"].value
         threshold = _float_parameter(test, "warn_variability_percent", 50.0)
-        if isinstance(variability, (int, float)) and variability > threshold:
+        if variability is None:
+            case.status_hint = ResultStatus.WARN
+            case.reason = "timing variability is unavailable because duration could not be measured"
+        elif isinstance(variability, (int, float)) and variability > threshold:
             case.status_hint = ResultStatus.WARN
             case.reason = "timing variability exceeded the configured soft threshold"
         return case
@@ -302,7 +305,7 @@ def _run_test(
     run_token: CancellationToken,
 ) -> tuple[TestResult, list[TelemetrySample]]:
     started_at = datetime.now(UTC)
-    started = time.monotonic()
+    started = time.perf_counter()
     if not test.enabled:
         ended_at = datetime.now(UTC)
         return (
@@ -310,7 +313,7 @@ def _run_test(
                 test_id=test.id,
                 started_at=started_at,
                 ended_at=ended_at,
-                duration_seconds=time.monotonic() - started,
+                duration_seconds=time.perf_counter() - started,
                 status=ResultStatus.SKIP,
                 failure_reason="test is disabled in the plan",
                 telemetry_summary=_telemetry_summary([]),
@@ -376,7 +379,7 @@ def _run_test(
             test_id=test.id,
             started_at=started_at,
             ended_at=ended_at,
-            duration_seconds=time.monotonic() - started,
+            duration_seconds=time.perf_counter() - started,
             status=status,
             measured_values=case.measurements,
             requirements=evaluations,

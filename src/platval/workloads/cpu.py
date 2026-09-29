@@ -12,6 +12,7 @@ from platval.models.common import DomainModel
 from platval.workloads.control import CancellationToken, WorkloadContext
 from platval.workloads.models import WorkloadMeasurement, WorkloadResult
 from platval.workloads.safety import MIB, SafetyPolicy, resolve_policy
+from platval.workloads.timing import rate_per_second
 
 
 class IntegerWorkloadConfig(DomainModel):
@@ -93,11 +94,11 @@ def run_integer_workload(
     context = WorkloadContext.create(timeout_seconds, token)
     context.checkpoint()
     started_at = datetime.now(UTC)
-    total_start = time.monotonic()
+    total_start = time.perf_counter()
 
     expected = config.expected_checksum or _reference_checksum(config, context)
     counts = _operation_counts(config.operations, config.workers)
-    measured_start = time.monotonic()
+    measured_start = time.perf_counter()
     with ThreadPoolExecutor(max_workers=config.workers, thread_name_prefix="platval-cpu") as pool:
         futures = [
             pool.submit(_hash_worker, index, count, config.block_size_bytes, context)
@@ -108,10 +109,10 @@ def run_integer_workload(
         except BaseException:
             context.token.cancel()
             raise
-    measured_seconds = time.monotonic() - measured_start
+    measured_seconds = time.perf_counter() - measured_start
     checksum = _combine_worker_digests(digests)
     ended_at = datetime.now(UTC)
-    duration = time.monotonic() - total_start
+    duration = time.perf_counter() - total_start
     return WorkloadResult(
         workload="cpu_integer",
         started_at=started_at,
@@ -125,7 +126,7 @@ def run_integer_workload(
             "workers": WorkloadMeasurement(value=config.workers, unit="workers"),
             "measured_duration": WorkloadMeasurement(value=measured_seconds, unit="seconds"),
             "operations_per_second": WorkloadMeasurement(
-                value=config.operations / max(measured_seconds, 1e-12), unit="blocks/s"
+                value=rate_per_second(config.operations, measured_seconds), unit="blocks/s"
             ),
         },
     )
@@ -144,7 +145,7 @@ def run_floating_point_workload(
     context = WorkloadContext.create(timeout_seconds, token)
     context.checkpoint()
     started_at = datetime.now(UTC)
-    started = time.monotonic()
+    started = time.perf_counter()
     total = 0.0
     compensation = 0.0
     for index in range(1, config.iterations + 1):
@@ -156,7 +157,7 @@ def run_floating_point_workload(
         compensation = (updated - total) - adjusted
         total = updated
     context.checkpoint()
-    duration = time.monotonic() - started
+    duration = time.perf_counter() - started
     expected = config.iterations / (config.iterations + 1)
     absolute_error = abs(total - expected)
     ended_at = datetime.now(UTC)
@@ -172,7 +173,7 @@ def run_floating_point_workload(
             "absolute_error": WorkloadMeasurement(value=absolute_error),
             "tolerance": WorkloadMeasurement(value=config.tolerance),
             "operations_per_second": WorkloadMeasurement(
-                value=config.iterations / max(duration, 1e-12), unit="terms/s"
+                value=rate_per_second(config.iterations, duration), unit="terms/s"
             ),
         },
         notes=[
@@ -194,7 +195,7 @@ def run_stability_workload(
     active_policy.require_timeout(timeout_seconds)
     context = WorkloadContext.create(timeout_seconds, token)
     started_at = datetime.now(UTC)
-    started = time.monotonic()
+    started = time.perf_counter()
     durations: list[float] = []
     expected_checksum = config.integer.expected_checksum
     correct = True
@@ -215,13 +216,13 @@ def run_stability_workload(
         durations.append(float(duration_value))
     median_duration = statistics.median(durations)
     mad = statistics.median(abs(value - median_duration) for value in durations)
-    robust_variability_percent = 100.0 * mad / max(median_duration, 1e-12)
+    robust_variability_percent = rate_per_second(100.0 * mad, median_duration)
     ended_at = datetime.now(UTC)
     return WorkloadResult(
         workload="scheduler_stability",
         started_at=started_at,
         ended_at=ended_at,
-        duration_seconds=time.monotonic() - started,
+        duration_seconds=time.perf_counter() - started,
         correct=correct,
         checksum=expected_checksum,
         measurements={

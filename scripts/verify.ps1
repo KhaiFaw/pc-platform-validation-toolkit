@@ -2,7 +2,8 @@
 param(
     [switch]$UseExistingEnvironment,
     [switch]$SkipNative,
-    [string]$PythonPath = 'python'
+    [string]$PythonPath = 'python',
+    [string]$NativeProbePath
 )
 
 $ErrorActionPreference = 'Stop'
@@ -22,9 +23,13 @@ if (Test-Path -LiteralPath $verificationRoot) {
 New-Item -ItemType Directory -Path $verificationRoot | Out-Null
 try {
     if ($UseExistingEnvironment) {
-        $python = Join-Path $projectRoot '.venv\Scripts\python.exe'
-        if (-not (Test-Path -LiteralPath $python)) {
-            throw 'The project .venv is missing. Run the documented setup first.'
+        if ($PSBoundParameters.ContainsKey('PythonPath')) {
+            $python = $PythonPath
+        } else {
+            $python = Join-Path $projectRoot '.venv\Scripts\python.exe'
+            if (-not (Test-Path -LiteralPath $python)) {
+                throw 'The project .venv is missing. Run the documented setup first.'
+            }
         }
     } else {
         $venv = Join-Path $verificationRoot 'venv'
@@ -49,19 +54,43 @@ try {
         if ($cmake) {
             & "$projectRoot\scripts\build_native.ps1"
             if ($LASTEXITCODE -ne 0) { throw 'Native verification failed.' }
+            if (-not $NativeProbePath) {
+                $probeCandidates = @(
+                    (Join-Path $projectRoot 'cpp\cpuid_probe\build\Release\cpuid_probe.exe'),
+                    (Join-Path $projectRoot 'cpp\cpuid_probe\build\cpuid_probe.exe')
+                )
+                $NativeProbePath = $probeCandidates | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } | Select-Object -First 1
+                if (-not $NativeProbePath) { throw 'The built native probe executable could not be located.' }
+            }
         } else {
             Write-Warning 'CMake is unavailable; native build verification was skipped.'
         }
     }
 
+    $nativeArguments = @()
+    if ($NativeProbePath) {
+        if (-not (Test-Path -LiteralPath $NativeProbePath -PathType Leaf)) {
+            throw 'The explicitly requested native probe does not exist.'
+        }
+        $nativeArguments = @('--native-probe', [System.IO.Path]::GetFullPath($NativeProbePath))
+    }
+
     Push-Location $projectRoot
     try {
         Write-Host 'Checking environment capabilities...'
-        & $python -m platval.cli doctor --runtime-dir $runtimeDirectory
+        $doctorOutput = & $python -m platval.cli doctor --runtime-dir $runtimeDirectory @nativeArguments --json
         if ($LASTEXITCODE -ne 0) { throw 'Capability diagnostics failed.' }
+        $doctor = $doctorOutput | ConvertFrom-Json
+        Write-Host "Capability diagnostics: $($doctor.overall_status)"
+        if ($NativeProbePath) {
+            $nativeCheck = $doctor.checks | Where-Object { $_.name -eq 'native CPUID probe' }
+            if ($nativeCheck.status -ne 'PASS') {
+                throw 'The requested native probe did not pass schema/invocation validation.'
+            }
+        }
 
         Write-Host 'Running the bounded quick plan...'
-        $runOutput = & $python -m platval.cli run --plan configs/quick.yaml --runtime-dir $runtimeDirectory --json
+        $runOutput = & $python -m platval.cli run --plan configs/quick.yaml --runtime-dir $runtimeDirectory @nativeArguments --json
         if ($LASTEXITCODE -ne 0) { throw 'Quick validation plan failed.' }
         $storedRun = $runOutput | ConvertFrom-Json
         $runId = $storedRun.execution.run.run_id
@@ -83,11 +112,23 @@ try {
             throw "Canonical run artifact is missing: $canonicalArtifact"
         }
 
-        Write-Host 'Creating and comparing an immutable baseline...'
+        Write-Host 'Creating an immutable baseline and executing a separate repeat run...'
         & $python -m platval.cli baseline create --from-run $runId --name verification-known-good --runtime-dir $runtimeDirectory --json | Out-Null
         if ($LASTEXITCODE -ne 0) { throw 'Baseline creation failed.' }
-        & $python -m platval.cli compare --baseline verification-known-good --run $runId --runtime-dir $runtimeDirectory --json | Out-Null
-        if ($LASTEXITCODE -ne 0) { throw 'Baseline comparison failed.' }
+        $repeatOutput = & $python -m platval.cli run --plan configs/quick.yaml --runtime-dir $runtimeDirectory @nativeArguments --json
+        if ($LASTEXITCODE -ne 0) { throw 'Repeated functional quick plan failed.' }
+        $repeatRun = $repeatOutput | ConvertFrom-Json
+        $repeatRunId = $repeatRun.execution.run.run_id
+        if ([string]::IsNullOrWhiteSpace($repeatRunId) -or $repeatRunId -eq $runId) {
+            throw 'The repeat plan did not return an independent run identifier.'
+        }
+        $comparisonOutput = & $python -m platval.cli compare --baseline verification-known-good --run $repeatRunId --runtime-dir $runtimeDirectory --json
+        if ($LASTEXITCODE -notin @(0, 1)) { throw 'Baseline comparison execution failed.' }
+        $comparison = $comparisonOutput | ConvertFrom-Json
+        if (-not $comparison.platform_compatible -or -not $comparison.plan_compatible) {
+            throw 'Independent verification runs are not compatible.'
+        }
+        Write-Host "Independent comparison: $($comparison.overall_status). Short-run timing classifications are evidence, not a quality-gate benchmark."
 
         Write-Host 'Producing the labelled synthetic failure demonstration...'
         $demoRuntimeDirectory = Join-Path $verificationRoot 'failure-demo'

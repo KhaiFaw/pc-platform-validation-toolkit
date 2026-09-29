@@ -131,3 +131,5 @@ def test_baseline_cli_creates_lists_and_compares(tmp_path: Path) -> None:
     assert comparison["platform_compatible"] is True
     assert comparison["plan_compatible"] is True
     assert comparison["comparisons"]
+    assert comparison["overall_status"] == "WARN"
+    assert any("self-comparison" in warning for warning in comparison["warnings"])

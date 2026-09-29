@@ -1,7 +1,10 @@
 [CmdletBinding()]
 param(
     [ValidateSet('Debug', 'Release')]
-    [string]$Configuration = 'Release'
+    [string]$Configuration = 'Release',
+    [string]$Generator,
+    [string]$CxxCompiler,
+    [string]$MakeProgram
 )
 
 $ErrorActionPreference = 'Stop'
@@ -14,7 +17,18 @@ if (-not $cmake) {
     throw 'CMake is required to build cpuid_probe but was not found on PATH.'
 }
 
-& $cmake.Source -S $sourceDirectory -B $buildDirectory
+$configureArguments = @('-S', $sourceDirectory, '-B', $buildDirectory, "-DCMAKE_BUILD_TYPE=$Configuration")
+if ($Generator) { $configureArguments += @('-G', $Generator) }
+foreach ($tool in @(@('CMAKE_CXX_COMPILER', $CxxCompiler), @('CMAKE_MAKE_PROGRAM', $MakeProgram))) {
+    if ($tool[1]) {
+        if (-not (Test-Path -LiteralPath $tool[1] -PathType Leaf)) {
+            throw "The requested $($tool[0]) executable does not exist."
+        }
+        $resolvedTool = [System.IO.Path]::GetFullPath($tool[1]).Replace('\', '/')
+        $configureArguments += "-D$($tool[0])=$resolvedTool"
+    }
+}
+& $cmake.Source @configureArguments
 if ($LASTEXITCODE -ne 0) { throw 'CMake configuration failed.' }
 
 & $cmake.Source --build $buildDirectory --config $Configuration
