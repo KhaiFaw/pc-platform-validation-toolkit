@@ -1,5 +1,6 @@
 """Immutable baseline lifecycle and conservative regression comparisons."""
 
+import math
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -108,8 +109,13 @@ def compare_run(
     warning_threshold_percent: float = 10.0,
     failure_threshold_percent: float = 20.0,
 ) -> ComparisonReport:
-    if warning_threshold_percent < 0 or failure_threshold_percent <= warning_threshold_percent:
-        raise ValueError("thresholds require 0 <= warning < failure")
+    if (
+        not math.isfinite(warning_threshold_percent)
+        or not math.isfinite(failure_threshold_percent)
+        or warning_threshold_percent < 0
+        or failure_threshold_percent <= warning_threshold_percent
+    ):
+        raise ValueError("thresholds require finite values with 0 <= warning < failure")
     repository = _repository(runtime_directory)
     baseline = repository.get_baseline(baseline_name)
     source = repository.get_run(baseline.source_run_id)
@@ -119,6 +125,15 @@ def compare_run(
     )
     plan_compatible = baseline.plan_hash == current.execution.run.plan_hash
     warnings: list[str] = []
+    if baseline.source_run_id == run_id:
+        warnings.append(
+            "The baseline source and current run are identical; this is a self-comparison, "
+            "not independent regression evidence."
+        )
+    if source.execution.platform.power_plan_name != current.execution.platform.power_plan_name:
+        warnings.append(
+            "Recorded power plans differ; timing comparisons are not controlled for power policy."
+        )
     if not platform_compatible:
         warnings.append(
             "Platform fingerprints differ; numeric regression conclusions were withheld."

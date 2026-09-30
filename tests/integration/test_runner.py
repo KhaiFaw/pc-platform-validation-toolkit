@@ -1,4 +1,7 @@
+import time
 from pathlib import Path
+
+import pytest
 
 from platval.models.plan import TestPlan as PlanModel
 from platval.models.status import ResultStatus
@@ -48,3 +51,29 @@ def test_unmet_requirement_produces_fail_status(tmp_path: Path) -> None:
     assert result.status is ResultStatus.FAIL
     assert result.requirements[0].passed is False
     assert execution.run.overall_status is ResultStatus.FAIL
+
+
+def test_unmeasurable_stability_is_warn_not_quantitative_pass(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setattr(time, "perf_counter", lambda: 100.0)
+    plan = PlanModel.model_validate(
+        {
+            "name": "unmeasurable-stability",
+            "tests": [
+                {
+                    "id": "STB-001",
+                    "name": "Stability with a clock that does not tick",
+                    "category": "stability",
+                    "timeout_seconds": 5,
+                    "parameters": {"workload_size": 4, "block_size_bytes": 4096},
+                }
+            ],
+        }
+    )
+    execution = run_validation_plan(plan, runtime_directory=tmp_path / "runtime")
+    result = execution.run.test_results[0]
+    assert result.measured_values["robust_variability"].value is None
+    assert result.status is ResultStatus.WARN
+    assert "duration could not be measured" in (result.failure_reason or "")
+    assert execution.run.overall_status is ResultStatus.WARN

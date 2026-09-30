@@ -4,6 +4,19 @@ All notable changes will be documented here. The project has not made a stable r
 
 ## Unreleased
 
+### Fixed
+
+- Use high-resolution performance-counter timing for short CPU/memory/storage/stability workloads and test durations while keeping monotonic safety deadlines.
+- Represent zero/non-finite duration rates as unavailable rather than epsilon-derived extremes; warn when stability cannot be measured.
+- Explicitly warn about self-comparisons and changed recorded power plans, and reject non-finite comparison thresholds.
+- Forward the locally built or explicitly selected native probe through acceptance diagnostics and both independent quick runs.
+
+### Local verification
+
+- Portable native Release build, decoder CTest and actual Python schema integration passed.
+- Added a repeatable two-session capture procedure with package-origin validation, source/binary hashes, immutable outputs and sanitized power/background-load context.
+- Preserved native-enabled paired reports, including timing threshold failures and measurement limitations; 80 Python tests and local quality gates passed.
+
 ### Added
 
 - Initial Python packaging and command entry point.

@@ -1,5 +1,17 @@
 # Final verification record
 
+## Local native and independent-session verification — 30 September 2026
+
+Implementation commit `b9e7476` adds high-resolution duration measurement, unavailable zero-duration rates, a WARN for unmeasurable stability, baseline self-comparison/power-policy warnings and finite-threshold validation. The existing Python 3.12.14 development environment passed **80 tests**, **83.73% combined statement/branch coverage**, Ruff lint/format checks and strict mypy across 59 files. These are local results, not a claim that this new branch has run remotely.
+
+The optional native source compiled in Release with portable CMake 4.4.3 and LLVM/MinGW Clang 23.1.2, using MinGW Makefiles. CTest passed 1/1 decoder executable; actual CPUID output validated through the Python adapter as AVAILABLE, schema 1, version 0.1.0. No native source change was needed. AMD extended-cache decoding remains an explicit limitation; trustworthy temperature and battery/AC observations remain unavailable.
+
+The [retained pair](../examples/independent-sessions/README.md) executes the checked-in quick plan twice, 15 seconds apart, using the same binary and clean implementation source. Each plan returned 8 PASS and 1 WARN. The baseline/current UUIDs differ; plan hashes and platform fingerprints match. The comparison returned FAIL at the recorded timing threshold, which is retained and explained rather than presented as a hardware defect or filtered into a performance-success claim. Context, exact binary hash, package-origin check and source hashes are preserved.
+
+The updated acceptance script passed Python gates, local native build/CTest, native-enabled diagnostics, bounded plans, all report formats, an independent second-run comparison and the labelled synthetic failure demo. It displayed a short-run comparison FAIL without treating brief interactive-desktop timing as a benchmark gate; functional failures still abort verification. Verification's owned `.tmp/verification` directory was removed by its checked cleanup path. Generated paired evidence was separately retained; prior diagnostic iterations remain in ignored runtime folders.
+
+See the [capture procedure](independent-sessions.md) for provenance, limitations and legacy-baseline recapture requirements. Historical pre-fix timing baselines should not be used with the corrected clock, even when their version/plan hashes match.
+
 ## Portfolio verification — 20 September 2026
 
 Base commit `73c14ff`, with local documentation/evidence additions. A new isolated Python 3.12 environment installed the documented `.[dev]` dependencies. Results: 66 tests passed, 83.65% combined statement/branch coverage under the existing coverage configuration, Ruff lint and formatting passed, and mypy passed for 57 files. The coverage percentage is this run's result, not a maintained badge or branch-only percentage.
@@ -35,6 +47,6 @@ If `py` does not resolve directly as an executable in your shell, pass an absolu
 
 The verifier owns only `.tmp/verification`, refuses to reuse an existing directory at that location, validates the resolved cleanup boundary, and removes its evidence on completion. Tests separately cover timeout, cancellation, and temporary-workload cleanup.
 
-The original Windows development machine does not have CMake or a C++20 compiler, so local verification records that optional step as skipped. The GitHub Actions matrix is the native build evidence: it configures, builds, and runs CTest on both Windows and Ubuntu while also repeating the portable quality gates and generating downloadable synthetic report evidence.
+At the original milestone acceptance, the Windows development machine did not have CMake or a C++20 compiler and the optional native step was skipped. The 30 September follow-up above adds real local native build/integration evidence using portable tools. GitHub Actions also configures, builds and runs CTest on Windows and Ubuntu; the new maintenance branch's remote result must be verified after publication.
 
 No result from this toolkit constitutes hardware certification. Missing sensors remain explicit, hosted CI performance is not treated as a benchmark, and the included failure report is clearly labelled synthetic.

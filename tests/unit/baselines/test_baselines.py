@@ -67,6 +67,8 @@ def test_baseline_is_immutable_and_comparison_classifies_regression(tmp_path: Pa
         item for item in unchanged.comparisons if item.metric == "operations_per_second"
     )
     assert same_metric.outcome is ComparisonOutcome.UNCHANGED
+    assert unchanged.overall_status.value == "WARN"
+    assert any("self-comparison" in warning for warning in unchanged.warnings)
 
 
 def test_incompatible_platform_withholds_numeric_comparison(tmp_path: Path) -> None:
@@ -83,3 +85,49 @@ def test_incompatible_platform_withholds_numeric_comparison(tmp_path: Path) -> N
     assert report.comparisons == []
     assert any("withheld" in warning for warning in report.warnings)
     assert SQLiteRepository(runtime / "platval.db").list_baselines() == [report.baseline]
+
+
+def test_independent_runs_do_not_emit_self_comparison_warning(tmp_path: Path) -> None:
+    runtime = tmp_path / "store"
+    source = with_throughput(make_execution(tmp_path), 100.0)
+    current = with_throughput(source, 100.0)
+    persist_execution(source, runtime_directory=runtime)
+    persist_execution(current, runtime_directory=runtime)
+    create_baseline("known-good", source.run.run_id, runtime_directory=runtime)
+
+    report = compare_run("known-good", current.run.run_id, runtime_directory=runtime)
+    assert report.baseline.source_run_id != report.run_id
+    assert not any("self-comparison" in warning for warning in report.warnings)
+
+
+def test_power_plan_change_is_explicit_even_on_compatible_platform(tmp_path: Path) -> None:
+    runtime = tmp_path / "store"
+    source = with_throughput(make_execution(tmp_path), 100.0)
+    current = with_throughput(source, 100.0)
+    source.platform.power_plan_name = "Balanced"
+    current.platform.power_plan_name = "Power saver"
+    persist_execution(source, runtime_directory=runtime)
+    persist_execution(current, runtime_directory=runtime)
+    create_baseline("known-good", source.run.run_id, runtime_directory=runtime)
+
+    report = compare_run("known-good", current.run.run_id, runtime_directory=runtime)
+    assert report.platform_compatible is True
+    assert report.overall_status.value == "WARN"
+    assert any("power plans differ" in warning for warning in report.warnings)
+
+
+@pytest.mark.parametrize(
+    ("warning", "failure"),
+    [(float("nan"), 20.0), (10.0, float("nan")), (float("inf"), 20.0), (10.0, float("inf"))],
+)
+def test_comparison_rejects_nonfinite_thresholds(
+    tmp_path: Path, warning: float, failure: float
+) -> None:
+    with pytest.raises(ValueError, match="finite values"):
+        compare_run(
+            "known-good",
+            str(uuid.uuid4()),
+            runtime_directory=tmp_path,
+            warning_threshold_percent=warning,
+            failure_threshold_percent=failure,
+        )

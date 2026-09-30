@@ -16,6 +16,7 @@ from platval.workloads.control import CancellationToken, WorkloadContext
 from platval.workloads.errors import SafetyLimitError
 from platval.workloads.models import WorkloadMeasurement, WorkloadResult
 from platval.workloads.safety import MIB, SafetyPolicy, resolve_policy
+from platval.workloads.timing import rate_per_second
 
 
 class StorageWorkloadConfig(DomainModel):
@@ -53,7 +54,7 @@ def run_storage_workload(
     context = WorkloadContext.create(timeout_seconds, token)
     context.checkpoint()
     started_at = datetime.now(UTC)
-    started = time.monotonic()
+    started = time.perf_counter()
     test_directory: Path | None = None
     write_seconds = 0.0
     read_seconds = 0.0
@@ -63,7 +64,7 @@ def run_storage_workload(
         test_directory = Path(tempfile.mkdtemp(prefix="platval-storage-", dir=root))
         test_file = test_directory / "round-trip.bin"
         expected_hasher = hashlib.sha256()
-        write_started = time.monotonic()
+        write_started = time.perf_counter()
         with test_file.open("xb") as handle:
             remaining = config.size_bytes
             index = 0
@@ -77,11 +78,11 @@ def run_storage_workload(
                 index += 1
             handle.flush()
             os.fsync(handle.fileno())
-        write_seconds = time.monotonic() - write_started
+        write_seconds = time.perf_counter() - write_started
         expected_checksum = expected_hasher.hexdigest()
 
         actual_hasher = hashlib.sha256()
-        read_started = time.monotonic()
+        read_started = time.perf_counter()
         with test_file.open("rb") as handle:
             while True:
                 context.checkpoint()
@@ -89,13 +90,13 @@ def run_storage_workload(
                 if not block:
                     break
                 actual_hasher.update(block)
-        read_seconds = time.monotonic() - read_started
+        read_seconds = time.perf_counter() - read_started
         actual_checksum = actual_hasher.hexdigest()
     finally:
         if test_directory is not None:
             shutil.rmtree(test_directory)
 
-    duration = time.monotonic() - started
+    duration = time.perf_counter() - started
     ended_at = datetime.now(UTC)
     return WorkloadResult(
         workload="temporary_storage_round_trip",
@@ -108,10 +109,10 @@ def run_storage_workload(
             "checksum_valid": WorkloadMeasurement(value=actual_checksum == expected_checksum),
             "file_size": WorkloadMeasurement(value=config.size_bytes, unit="bytes"),
             "write_throughput": WorkloadMeasurement(
-                value=config.size_bytes / max(write_seconds, 1e-12), unit="bytes/s"
+                value=rate_per_second(config.size_bytes, write_seconds), unit="bytes/s"
             ),
             "read_throughput": WorkloadMeasurement(
-                value=config.size_bytes / max(read_seconds, 1e-12), unit="bytes/s"
+                value=rate_per_second(config.size_bytes, read_seconds), unit="bytes/s"
             ),
         },
         notes=["This is a local functional sample, not a universal storage benchmark."],

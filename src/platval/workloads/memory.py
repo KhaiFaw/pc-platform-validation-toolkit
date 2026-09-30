@@ -11,6 +11,7 @@ from platval.models.common import DomainModel
 from platval.workloads.control import CancellationToken, WorkloadContext
 from platval.workloads.models import WorkloadMeasurement, WorkloadResult
 from platval.workloads.safety import MIB, SafetyPolicy, resolve_policy
+from platval.workloads.timing import rate_per_second
 
 _DEFAULT_MAX_ALLOCATION = 256 * MIB
 _PATTERN = bytes((index * 131 + 17) & 0xFF for index in range(256))
@@ -49,7 +50,7 @@ def run_memory_workload(
     context = WorkloadContext.create(timeout_seconds, token)
     context.checkpoint()
     started_at = datetime.now(UTC)
-    started = time.monotonic()
+    started = time.perf_counter()
     buffer = bytearray(allocation)
     chunk_size = min(config.chunk_size_bytes, allocation)
     source_chunk = _pattern_chunk(chunk_size, transformed=False)
@@ -76,7 +77,7 @@ def run_memory_workload(
         actual_hasher.update(view[offset : offset + min(chunk_size, allocation - offset)])
     actual_checksum = actual_hasher.hexdigest()
     expected_checksum = expected_hasher.hexdigest()
-    duration = time.monotonic() - started
+    duration = time.perf_counter() - started
     ended_at = datetime.now(UTC)
     view.release()
     return WorkloadResult(
@@ -91,7 +92,7 @@ def run_memory_workload(
             "allocation": WorkloadMeasurement(value=allocation, unit="bytes"),
             "processed_bytes": WorkloadMeasurement(value=allocation * 3, unit="bytes"),
             "throughput": WorkloadMeasurement(
-                value=(allocation * 3) / max(duration, 1e-12), unit="bytes/s"
+                value=rate_per_second(allocation * 3, duration), unit="bytes/s"
             ),
         },
         notes=["This verifies application-visible memory, not physical DRAM in isolation."],

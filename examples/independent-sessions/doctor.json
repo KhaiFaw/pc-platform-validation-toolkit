@@ -1,0 +1,93 @@
+{
+  "overall_status": "WARN",
+  "checks": [
+    {
+      "name": "Python version",
+      "status": "PASS",
+      "detail": "Python 3.12 is supported."
+    },
+    {
+      "name": "Python dependencies",
+      "status": "PASS",
+      "detail": "All required Python imports are available."
+    },
+    {
+      "name": "runtime directory",
+      "status": "PASS",
+      "detail": "Runtime directory is writable."
+    },
+    {
+      "name": "temporary disk space",
+      "status": "PASS",
+      "detail": "Temporary disk space meets the 128 MiB minimum."
+    },
+    {
+      "name": "native CPUID probe",
+      "status": "PASS",
+      "detail": "Native probe 0.1.0 is compatible."
+    },
+    {
+      "name": "temperature telemetry",
+      "status": "WARN",
+      "detail": "A trustworthy temperature source is unavailable; runtime limits remain conservative."
+    }
+  ],
+  "capabilities": [
+    {
+      "metric": "cpu_utilization",
+      "available": true,
+      "source": "psutil",
+      "unit": "%",
+      "limitation": null
+    },
+    {
+      "metric": "per_core_utilization",
+      "available": true,
+      "source": "psutil",
+      "unit": "%",
+      "limitation": null
+    },
+    {
+      "metric": "cpu_frequency",
+      "available": true,
+      "source": "psutil",
+      "unit": "MHz",
+      "limitation": null
+    },
+    {
+      "metric": "process_cpu",
+      "available": true,
+      "source": "psutil",
+      "unit": "%",
+      "limitation": null
+    },
+    {
+      "metric": "process_memory",
+      "available": true,
+      "source": "psutil",
+      "unit": "bytes",
+      "limitation": null
+    },
+    {
+      "metric": "available_memory",
+      "available": true,
+      "source": "psutil",
+      "unit": "bytes",
+      "limitation": null
+    },
+    {
+      "metric": "disk_free",
+      "available": true,
+      "source": "psutil",
+      "unit": "bytes",
+      "limitation": null
+    },
+    {
+      "metric": "temperature",
+      "available": false,
+      "source": "psutil",
+      "unit": "degC",
+      "limitation": "A trustworthy temperature source is unavailable; runtime limits remain conservative."
+    }
+  ]
+}
